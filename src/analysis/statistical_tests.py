@@ -345,24 +345,24 @@ def bonferroni_correction(
 ) -> Tuple[List[float], List[bool]]:
     """
     Apply Bonferroni correction for multiple comparisons.
-    
+
     The Bonferroni correction is a conservative method to control
     the family-wise error rate (FWER).
-    
+
     Adjusted p-value = min(1.0, p * n_tests)
-    
+
     Args:
         p_values: List of p-values from individual tests
         alpha: Significance level (default 0.05)
-        
+
     Returns:
         Tuple of:
             - List of corrected p-values
             - List of booleans indicating significance
     """
     n_tests = len(p_values)
-    
+
     corrected_p = [min(1.0, p * n_tests) for p in p_values]
     significant = [p < alpha for p in corrected_p]
-    
+
     return corrected_p, significant

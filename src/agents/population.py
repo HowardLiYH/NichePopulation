@@ -31,15 +31,15 @@ class PopulationConfig:
     n_agents: int = 5
 
     # Method selection
-    max_methods_per_agent: int = 3
+    max_methods_per_agent: int = 2  # Fewer methods = sharper specialization
 
-    # Knowledge transfer
-    transfer_frequency: int = 10  # Transfer every N iterations
-    transfer_tau: float = 0.1     # Interpolation factor for transfer
+    # Knowledge transfer (REDUCED for diversity)
+    transfer_frequency: int = 50   # Less frequent (was 10)
+    transfer_tau: float = 0.05     # Gentler transfer (was 0.1)
 
     # Exploration
-    min_exploration_rate: float = 0.05
-    forgetting_factor: float = 0.995
+    min_exploration_rate: float = 0.10  # More exploration (was 0.05)
+    forgetting_factor: float = 0.999    # Less forgetting (was 0.995)
 
     # Random seed
     seed: Optional[int] = None

@@ -1,0 +1,14 @@
+{
+  "experiment_name": "exp2_diversity_v2",
+  "n_trials": 50,
+  "diverse_mean": 222.54936046046416,
+  "diverse_std": 43.80766039124961,
+  "random_mean": 35.530961295810265,
+  "momentum_mean": 134.69613319873446,
+  "improvement_vs_random": 187.01839916465389,
+  "improvement_vs_momentum": 87.8532272617297,
+  "p_vs_random": 1.2092780372439061e-34,
+  "p_vs_momentum": 7.845248249658985e-27,
+  "significant_vs_random": "True",
+  "significant_vs_momentum": "True"
+}

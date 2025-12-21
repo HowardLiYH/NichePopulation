@@ -174,7 +174,7 @@ def run_experiment(
     # Baseline comparison
     print("\nEvaluating baselines...")
     baseline_rewards = {}
-    
+
     # Skip complex baselines for now - just use simple reward comparison
     # HomogeneousPopulation doesn't have run_iteration method
     baseline_rewards["Homogeneous"] = test_reward * 0.8  # Approximate baseline

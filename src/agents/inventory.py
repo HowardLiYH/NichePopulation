@@ -396,27 +396,11 @@ class WaitForBreakoutMethod(TradingMethod):
 # METHOD INVENTORY
 # ============================================================================
 
-# All available methods
-METHOD_INVENTORY: Dict[str, TradingMethod] = {
-    # Trend-following
-    "Momentum": MomentumMethod(),
-    "Breakout": BreakoutMethod(),
-    "TrendFollowing": TrendFollowingMethod(),
+# Import V2 methods (better regime differentiation)
+from .inventory_v2 import METHOD_INVENTORY_V2, get_method_names_v2
 
-    # Mean reversion
-    "MeanReversion": MeanReversionMethod(),
-    "RSI": RSIMethod(),
-    "BollingerBands": BollingerBandsMethod(),
-
-    # Risk management
-    "StayFlat": StayFlatMethod(),
-    "VolatilityScaling": VolatilityScalingMethod(),
-    "ReduceExposure": ReduceExposureMethod(),
-
-    # Neutral
-    "RangeTrading": RangeTradingMethod(),
-    "WaitForBreakout": WaitForBreakoutMethod(),
-}
+# Use V2 inventory as default (better regime differentiation)
+METHOD_INVENTORY: Dict[str, TradingMethod] = METHOD_INVENTORY_V2
 
 
 def get_method_names() -> List[str]:

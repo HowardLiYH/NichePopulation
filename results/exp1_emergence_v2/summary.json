@@ -1,0 +1,37 @@
+{
+  "experiment_name": "exp1_emergence_v2",
+  "n_trials": 50,
+  "n_iterations": 3000,
+  "final_si_mean": 0.8609186474026664,
+  "final_si_std": 0.02240574585990157,
+  "final_si_ci_lower": 0.813757225355683,
+  "final_si_ci_upper": 0.879183794209226,
+  "diversity_mean": 1.0,
+  "specialist_win_rate_mean": 0.8057397132406391,
+  "specialist_win_rate_std": 0.036562370635623176,
+  "t_statistic": 112.75815353864607,
+  "p_value": 7.396997755688572e-61,
+  "effect_size": 38.42399483355115,
+  "significant": "True",
+  "si_trajectory_mean": [
+    0.0,
+    0.7607143970430641,
+    0.8294335899073153,
+    0.8533735621357654,
+    0.861763561531006
+  ],
+  "si_trajectory_std": [
+    0.0,
+    0.09592875837579021,
+    0.06264615108428688,
+    0.036727254475215305,
+    0.02078296081566581
+  ],
+  "checkpoints": [
+    0,
+    500,
+    1000,
+    2000,
+    3000
+  ]
+}
