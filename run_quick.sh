@@ -22,4 +22,3 @@ python -m experiments.runner \
 
 echo ""
 echo "Quick test complete! Results in results_quick/"
-

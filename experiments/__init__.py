@@ -12,10 +12,10 @@ Experiments:
 Usage:
     # Run all experiments
     python -m experiments.runner --all
-    
+
     # Run specific experiment
     python -m experiments.runner -e exp1
-    
+
     # Quick test (10 trials)
     python -m experiments.runner -e exp1 --trials 10
 """
@@ -27,7 +27,7 @@ __all__ = [
     "ExperimentConfig",
     "run_all_experiments",
     "exp1_emergence",
-    "exp2_diversity_value", 
+    "exp2_diversity_value",
     "exp3_population_size",
     "exp4_transfer_frequency",
     "exp5_regime_transitions",

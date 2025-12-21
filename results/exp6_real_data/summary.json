@@ -1,0 +1,31 @@
+{
+  "experiment_name": "exp6_real_data",
+  "train_final_si": 0.00017537023975389143,
+  "train_total_reward": 60.703961364653686,
+  "train_regime_distribution": {
+    "trend_up": 344,
+    "volatile": 977,
+    "mean_revert": 3017,
+    "trend_down": 356
+  },
+  "test_si": 0.0001502121331592887,
+  "test_total_reward": 46.717082453935454,
+  "test_baseline_rewards": {
+    "Homogeneous": 37.37366596314836
+  },
+  "test_regime_distribution": {
+    "mean_revert": 2708,
+    "volatile": 713,
+    "trend_up": 428,
+    "trend_down": 176
+  },
+  "si_matches_synthetic": false,
+  "outperforms_baseline": true,
+  "regime_specialist_map": {
+    "volatile": "agent_0",
+    "trend_down": "agent_0",
+    "unknown": "agent_0",
+    "mean_revert": "agent_0",
+    "trend_up": "agent_0"
+  }
+}

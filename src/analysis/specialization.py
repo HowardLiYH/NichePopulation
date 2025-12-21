@@ -237,6 +237,38 @@ def count_specialists(
     return n_specialists, n_generalists
 
 
+def compute_regime_coverage(
+    agents: Dict,
+    regime_names: List[str],
+) -> float:
+    """
+    Compute regime coverage: fraction of regimes with a specialist.
+    
+    A regime is "covered" if at least one agent specializes in it
+    (wins more than average in that regime).
+    
+    Args:
+        agents: Dict of agent objects with regime_wins attribute
+        regime_names: List of regime names to check
+        
+    Returns:
+        Fraction of regimes covered [0, 1]
+    """
+    if not regime_names:
+        return 0.0
+    
+    covered_regimes = 0
+    
+    for regime in regime_names:
+        # Check if any agent specializes in this regime
+        for agent in agents.values():
+            if hasattr(agent, 'regime_wins') and agent.regime_wins.get(regime, 0) > 0:
+                covered_regimes += 1
+                break
+    
+    return covered_regimes / len(regime_names)
+
+
 @dataclass
 class AgentMetrics:
     """Metrics for a single agent."""
@@ -377,3 +409,7 @@ class SpecializationTracker:
         """Get SI over time for a specific agent."""
         key = f"si_{agent_id}"
         return [r.get(key, 0.0) for r in self.history]
+
+
+# Alias for backward compatibility
+SpecializationMetrics = PopulationMetrics

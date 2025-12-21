@@ -1,0 +1,11 @@
+{
+  "experiment_name": "exp5_regime_transitions",
+  "n_trials": 50,
+  "total_transitions": 333,
+  "avg_switch_rate": 0.7594444444444443,
+  "avg_transition_delay": 0.24503968253968256,
+  "switch_expected": 0.8,
+  "switch_observed": 0.7507507507507507,
+  "chi2_statistic": 1.0096096096096137,
+  "chi2_p_value": 0.3149963826258838
+}

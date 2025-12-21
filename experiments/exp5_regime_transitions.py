@@ -72,36 +72,36 @@ class ExperimentResult:
     """Full experiment results."""
     experiment_name: str
     n_trials: int
-    
+
     # Aggregate metrics
     avg_switch_rate: float
     avg_transition_delay: float
-    
+
     # Chi-square test result
     switch_expected: float  # Expected switch rate if random
     switch_observed: float
     chi2_statistic: float
     chi2_p_value: float
-    
+
     trial_results: List[TrialResult]
 
 
 def detect_regime_transitions(regimes: pd.Series) -> List[Tuple[int, str, str]]:
     """
     Detect regime transition points.
-    
+
     Returns:
         List of (iteration, from_regime, to_regime)
     """
     transitions = []
     prev_regime = regimes.iloc[0]
-    
+
     for i in range(1, len(regimes)):
         curr_regime = regimes.iloc[i]
         if curr_regime != prev_regime:
             transitions.append((i, prev_regime, curr_regime))
         prev_regime = curr_regime
-    
+
     return transitions
 
 
@@ -122,7 +122,7 @@ def run_single_trial(
     )
     env = SyntheticMarketEnvironment(env_config)
     prices, regimes = env.generate(config.n_bars, seed=seed)
-    
+
     # Create population
     pop_config = PopulationConfig(
         n_agents=config.n_agents,
@@ -132,41 +132,41 @@ def run_single_trial(
         seed=seed,
     )
     population = Population(pop_config)
-    
+
     window_size = 20
-    
+
     # Track winner at each iteration
     winner_history = []
     regime_history = []
-    
+
     for i in range(window_size, min(len(prices) - 1, window_size + config.n_bars - 20)):
         current_regime = regimes.iloc[i]
         price_window = prices.iloc[i-window_size:i+1]
-        
+
         result = population.run_iteration(price_window, compute_reward_from_methods, current_regime)
-        winner_history.append(result.best_agent_id)
+        winner_history.append(result.winner_id)
         regime_history.append(current_regime)
-    
+
     # Detect transitions
     transitions = []
     regime_transitions = detect_regime_transitions(pd.Series(regime_history))
-    
+
     for trans_idx, from_regime, to_regime in regime_transitions:
         if trans_idx < 10 or trans_idx >= len(winner_history) - 10:
             continue  # Skip transitions too close to edges
-        
+
         # Winner before transition (mode of last 5 bars)
         winners_before = winner_history[max(0, trans_idx-5):trans_idx]
         if not winners_before:
             continue
         winner_before = Counter(winners_before).most_common(1)[0][0]
-        
+
         # Winner after transition (mode of next 10 bars)
         winners_after = winner_history[trans_idx:min(len(winner_history), trans_idx+10)]
         if not winners_after:
             continue
         winner_after = Counter(winners_after).most_common(1)[0][0]
-        
+
         # Transition delay: when does new winner first appear?
         delay = 0
         for j, w in enumerate(winners_after):
@@ -175,9 +175,9 @@ def run_single_trial(
                 break
         else:
             delay = len(winners_after)
-        
+
         switched = winner_before != winner_after
-        
+
         transitions.append(TransitionEvent(
             iteration=trans_idx,
             from_regime=from_regime,
@@ -187,22 +187,22 @@ def run_single_trial(
             transition_delay=delay,
             switched=switched,
         ))
-    
+
     # Compute regime-specialist mapping
     regime_winners = {}
     for regime, winner in zip(regime_history, winner_history):
         if regime not in regime_winners:
             regime_winners[regime] = []
         regime_winners[regime].append(winner)
-    
+
     regime_specialist_map = {
         regime: Counter(winners).most_common(1)[0][0] if winners else "unknown"
         for regime, winners in regime_winners.items()
     }
-    
+
     switch_rate = sum(1 for t in transitions if t.switched) / max(1, len(transitions))
     avg_delay = np.mean([t.transition_delay for t in transitions]) if transitions else 0.0
-    
+
     return TrialResult(
         trial_id=trial_id,
         seed=seed,
@@ -226,33 +226,33 @@ def run_experiment(
     print(f"Trials: {config.n_trials}")
     print(f"Regime duration: {config.regime_duration_mean} ± {config.regime_duration_std}")
     print(f"=" * 60)
-    
+
     trial_results = []
-    
+
     for trial_id in tqdm(range(config.n_trials), desc="Running trials"):
         seed = config.base_seed + trial_id * 1000
         result = run_single_trial(trial_id, seed, config)
         trial_results.append(result)
-    
+
     # Aggregate metrics
     switch_rates = [r.switch_rate for r in trial_results]
     transition_delays = [r.avg_transition_delay for r in trial_results if r.n_transitions > 0]
-    
+
     avg_switch_rate = float(np.mean(switch_rates))
     avg_transition_delay = float(np.mean(transition_delays)) if transition_delays else 0.0
-    
+
     # Chi-square test: is switching more frequent than random?
     # Under random assignment, switch probability = 1 - 1/n_agents
     n_agents = config.n_agents
     expected_switch_rate = 1 - 1/n_agents  # If agents were randomly winning
-    
+
     total_transitions = sum(r.n_transitions for r in trial_results)
     observed_switches = sum(
         sum(1 for t in r.transitions if t.switched)
         for r in trial_results
     )
     expected_switches = total_transitions * expected_switch_rate
-    
+
     # Simple chi-square
     if expected_switches > 0:
         chi2 = ((observed_switches - expected_switches) ** 2) / expected_switches
@@ -262,7 +262,7 @@ def run_experiment(
     else:
         chi2 = 0.0
         chi2_p = 1.0
-    
+
     result = ExperimentResult(
         experiment_name=config.experiment_name,
         n_trials=config.n_trials,
@@ -274,7 +274,7 @@ def run_experiment(
         chi2_p_value=chi2_p,
         trial_results=trial_results,
     )
-    
+
     # Print summary
     print(f"\n{'=' * 60}")
     print(f"RESULTS: Experiment 5")
@@ -290,12 +290,12 @@ def run_experiment(
     else:
         print("  → No significant switching (agents may not be specialized)")
     print(f"{'=' * 60}")
-    
+
     # Save results
     if save_results:
         results_dir = Path(config.results_dir) / config.experiment_name
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         summary = {
             "experiment_name": result.experiment_name,
             "n_trials": result.n_trials,
@@ -307,25 +307,25 @@ def run_experiment(
             "chi2_statistic": chi2,
             "chi2_p_value": chi2_p,
         }
-        
+
         with open(results_dir / "summary.json", "w") as f:
             json.dump(summary, f, indent=2)
-        
+
         print(f"\nResults saved to {results_dir}")
-    
+
     return result
 
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Run Experiment 5: Regime Transitions")
     parser.add_argument("--trials", type=int, default=50, help="Number of trials")
     parser.add_argument("--seed", type=int, default=42, help="Base random seed")
     parser.add_argument("--no-save", action="store_true", help="Don't save results")
-    
+
     args = parser.parse_args()
-    
+
     config = ExperimentConfig(
         experiment_name="exp5_regime_transitions",
         n_trials=args.trials,
@@ -333,6 +333,5 @@ if __name__ == "__main__":
         regime_duration_mean=100,  # Longer regimes for clear transitions
         regime_duration_std=5,
     )
-    
-    result = run_experiment(config, save_results=not args.no_save)
 
+    result = run_experiment(config, save_results=not args.no_save)

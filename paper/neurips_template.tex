@@ -42,30 +42,30 @@ A Population-Based Approach to Market Regime Adaptation}
 \maketitle
 
 \begin{abstract}
-We demonstrate that populations of learning agents in financial markets exhibit 
-\textbf{emergent specialization} without explicit supervision. Agents naturally 
-partition the market regime space through competitive selection pressure, 
-resembling Evolutionary Stable Strategies (ESS) in biological systems. Using a 
+We demonstrate that populations of learning agents in financial markets exhibit
+\textbf{emergent specialization} without explicit supervision. Agents naturally
+partition the market regime space through competitive selection pressure,
+resembling Evolutionary Stable Strategies (ESS) in biological systems. Using a
 controlled synthetic market environment with four distinct regimes, we show that:
-(1) Specialization Index increases from 0.10 to 0.65 over 500 training iterations 
+(1) Specialization Index increases from 0.10 to 0.65 over 500 training iterations
 ($p < 0.001$, $d = 2.1$);
 (2) Diverse populations outperform homogeneous baselines by 25-40\%;
 (3) Optimal population size of $N^* = 5$-$7$ exists for four regimes;
 (4) Knowledge transfer frequency exhibits a phase transition at $\tau^* \approx 10$.
-Our work provides theoretical grounding from ecology (niche partitioning) and 
+Our work provides theoretical grounding from ecology (niche partitioning) and
 game theory (ESS) for multi-agent trading systems.
 \end{abstract}
 
 \section{Introduction}
 
-The question of how agents should coordinate in non-stationary environments 
-is fundamental to multi-agent systems \cite{shoham2008multiagent}. Financial 
-markets present a particularly challenging instance: prices evolve through 
-distinct regimes (trending, mean-reverting, volatile) that require different 
+The question of how agents should coordinate in non-stationary environments
+is fundamental to multi-agent systems \cite{shoham2008multiagent}. Financial
+markets present a particularly challenging instance: prices evolve through
+distinct regimes (trending, mean-reverting, volatile) that require different
 trading strategies \cite{ang2012regime}.
 
-\textbf{Key Insight.} Rather than explicitly labeling regimes and assigning 
-specialists, we show that specialization \emph{emerges} from population 
+\textbf{Key Insight.} Rather than explicitly labeling regimes and assigning
+specialists, we show that specialization \emph{emerges} from population
 dynamics. This mirrors ecological niche partitioning \cite{schoener1974resource}
 and evolutionary stable strategies \cite{smith1982evolution}.
 
@@ -80,8 +80,8 @@ and evolutionary stable strategies \cite{smith1982evolution}.
 \section{Related Work}
 
 \paragraph{Multi-Agent Trading.}
-Prior work focuses on single-agent RL \cite{fischer2018reinforcement} or 
-centralized portfolio optimization \cite{jiang2017deep}. Population-based 
+Prior work focuses on single-agent RL \cite{fischer2018reinforcement} or
+centralized portfolio optimization \cite{jiang2017deep}. Population-based
 approaches exist \cite{luo2024evolving} but don't analyze emergent specialization.
 
 \paragraph{Regime Detection.}
@@ -89,7 +89,7 @@ Hidden Markov Models are standard for regime detection \cite{hamilton1989new}.
 We differ by not requiring explicit regime labels during training.
 
 \paragraph{Evolutionary Game Theory.}
-Evolutionary Stable Strategies (ESS) \cite{smith1982evolution} describe 
+Evolutionary Stable Strategies (ESS) \cite{smith1982evolution} describe
 equilibria resistant to invasion. Niche partitioning \cite{schoener1974resource}
 explains species coexistence through resource differentiation.
 
@@ -164,30 +164,29 @@ Paired t-test: $t = 25.4$, $p < 0.001$, Cohen's $d = 2.1$.
 
 \textbf{Protocol:} Test $\tau \in \{1, 5, 10, 25, 50, 100\}$.
 
-\textbf{Result:} Phase transition at $\tau^* \approx 10$. Too-frequent transfer 
+\textbf{Result:} Phase transition at $\tau^* \approx 10$. Too-frequent transfer
 ($\tau < 5$) prevents specialization.
 
 \section{Discussion}
 
-Our results support the hypothesis that specialization emerges from population 
+Our results support the hypothesis that specialization emerges from population
 dynamics without explicit supervision. This has implications for:
 
 \begin{itemize}
-    \item \textbf{Practical systems:} Let specialization emerge rather than 
+    \item \textbf{Practical systems:} Let specialization emerge rather than
           engineering it
     \item \textbf{Theory:} Connects multi-agent RL to evolutionary game theory
-    \item \textbf{Interpretability:} Specialists are more interpretable than 
+    \item \textbf{Interpretability:} Specialists are more interpretable than
           monolithic models
 \end{itemize}
 
 \section{Conclusion}
 
 We demonstrated emergent specialization in multi-agent trading populations.
-Future work includes testing on real markets and extending to more complex 
+Future work includes testing on real markets and extending to more complex
 regime structures.
 
 \bibliography{references}
 \bibliographystyle{plain}
 
 \end{document}
-

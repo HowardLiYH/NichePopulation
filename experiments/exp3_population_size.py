@@ -61,19 +61,19 @@ class SizeResult:
     """Aggregate results for a population size."""
     population_size: int
     n_trials: int
-    
+
     # SI statistics
     si_mean: float
     si_std: float
-    
+
     # Coverage statistics
     coverage_mean: float
     coverage_std: float
-    
+
     # Reward statistics
     reward_mean: float
     reward_std: float
-    
+
     # Convergence statistics
     convergence_mean: float
     convergence_std: float
@@ -108,7 +108,7 @@ def run_size_trial(
     )
     env = SyntheticMarketEnvironment(env_config)
     prices, regimes = env.generate(config.n_bars, seed=seed)
-    
+
     # Create population with specified size
     pop_config = PopulationConfig(
         n_agents=population_size,
@@ -118,39 +118,39 @@ def run_size_trial(
         seed=seed,
     )
     population = Population(pop_config)
-    
+
     window_size = 20
     tracker = SpecializationTracker(n_methods=11)
-    
+
     convergence_iteration = config.n_bars  # Default: never converged
     total_reward = 0.0
-    
+
     for i in range(window_size, min(len(prices) - 1, window_size + 500)):
         iteration = i - window_size + 1
         current_regime = regimes.iloc[i]
         price_window = prices.iloc[i-window_size:i+1]
-        
+
         result = population.run_iteration(price_window, compute_reward_from_methods, current_regime)
-        total_reward += result.best_reward
-        
+        total_reward += result.winner_reward
+
         # Check for convergence (SI > 0.5)
         if iteration % 50 == 0:
             distributions = population.get_all_method_usage()
             metrics = tracker.record(iteration, distributions, regime=current_regime)
-            
+
             if metrics.avg_specialization > 0.5 and convergence_iteration == config.n_bars:
                 convergence_iteration = iteration
-    
+
     # Final metrics
     final_distributions = population.get_all_method_usage()
     final_metrics = tracker.record(config.n_bars, final_distributions, regime=regimes.iloc[-1])
-    
+
     # Compute regime coverage
     regime_coverage = compute_regime_coverage(
         population.agents,
         config.regime_names,
     )
-    
+
     return SizeTrialResult(
         population_size=population_size,
         trial_id=trial_id,
@@ -175,26 +175,26 @@ def run_experiment(
     print(f"Sizes: {population_sizes}")
     print(f"Trials per size: {config.n_trials}")
     print(f"=" * 60)
-    
+
     all_trials = []
     size_results = {}
-    
+
     for pop_size in population_sizes:
         print(f"\nTesting N={pop_size}...")
-        
+
         size_trials = []
         for trial_id in tqdm(range(config.n_trials), desc=f"N={pop_size}"):
             seed = config.base_seed + pop_size * 10000 + trial_id * 1000
             result = run_size_trial(pop_size, trial_id, seed, config)
             size_trials.append(result)
             all_trials.append(result)
-        
+
         # Aggregate for this size
         sis = [t.final_si for t in size_trials]
         coverages = [t.regime_coverage for t in size_trials]
         rewards = [t.total_reward for t in size_trials]
         convergences = [t.convergence_iteration for t in size_trials]
-        
+
         size_results[pop_size] = SizeResult(
             population_size=pop_size,
             n_trials=config.n_trials,
@@ -207,10 +207,10 @@ def run_experiment(
             convergence_mean=float(np.mean(convergences)),
             convergence_std=float(np.std(convergences)),
         )
-    
+
     # Find optimal size (by reward)
     optimal_size = max(size_results.keys(), key=lambda n: size_results[n].reward_mean)
-    
+
     result = ExperimentResult(
         experiment_name=config.experiment_name,
         population_sizes=population_sizes,
@@ -219,7 +219,7 @@ def run_experiment(
         optimal_criterion="reward",
         trial_results=all_trials,
     )
-    
+
     # Print summary
     print(f"\n{'=' * 60}")
     print(f"RESULTS: Experiment 3")
@@ -235,12 +235,12 @@ def run_experiment(
               f"{sr.convergence_mean:>6.0f}±{sr.convergence_std:.0f}")
     print(f"\nOptimal population size: N* = {optimal_size}")
     print(f"{'=' * 60}")
-    
+
     # Save results
     if save_results:
         results_dir = Path(config.results_dir) / config.experiment_name
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         summary = {
             "experiment_name": result.experiment_name,
             "population_sizes": population_sizes,
@@ -260,31 +260,30 @@ def run_experiment(
                 for n, sr in size_results.items()
             },
         }
-        
+
         with open(results_dir / "summary.json", "w") as f:
             json.dump(summary, f, indent=2)
-        
+
         print(f"\nResults saved to {results_dir}")
-    
+
     return result
 
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Run Experiment 3: Population Size Effect")
     parser.add_argument("--trials", type=int, default=50, help="Trials per size")
     parser.add_argument("--seed", type=int, default=42, help="Base random seed")
     parser.add_argument("--sizes", nargs="+", type=int, default=POPULATION_SIZES, help="Population sizes to test")
     parser.add_argument("--no-save", action="store_true", help="Don't save results")
-    
+
     args = parser.parse_args()
-    
+
     config = ExperimentConfig(
         experiment_name="exp3_population_size",
         n_trials=args.trials,
         base_seed=args.seed,
     )
-    
-    result = run_experiment(config, population_sizes=args.sizes, save_results=not args.no_save)
 
+    result = run_experiment(config, population_sizes=args.sizes, save_results=not args.no_save)

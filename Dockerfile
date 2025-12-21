@@ -33,4 +33,3 @@ CMD ["python", "-m", "experiments.runner", "-e", "exp1", "--trials", "10"]
 
 # To run specific experiment:
 # docker run emergent-specialization python experiments/exp1_emergence.py --trials 100
-

@@ -1,0 +1,77 @@
+{
+  "experiment_name": "exp2_diversity_value",
+  "n_trials": 100,
+  "diverse_reward_mean": 24.654626427023796,
+  "diverse_reward_std": 5.911230190528255,
+  "performance_ranking": [
+    "Diverse",
+    "Oracle",
+    "BuyAndHold",
+    "Momentum",
+    "MeanReversion",
+    "Random",
+    "Homogeneous"
+  ],
+  "comparisons": [
+    {
+      "baseline": "Oracle",
+      "diverse_mean": 24.654626427023796,
+      "baseline_mean": 3.8740961916263097,
+      "p_value": 1.7469495687177586e-51,
+      "p_value_corrected": 1.0481697412306552e-50,
+      "effect_size": 2.999101544481112,
+      "significant": true,
+      "diverse_wins": true
+    },
+    {
+      "baseline": "Homogeneous",
+      "diverse_mean": 24.654626427023796,
+      "baseline_mean": -0.6451458031399965,
+      "p_value": 1.602430129278794e-62,
+      "p_value_corrected": 9.614580775672765e-62,
+      "effect_size": 3.9607179132579113,
+      "significant": true,
+      "diverse_wins": true
+    },
+    {
+      "baseline": "Random",
+      "diverse_mean": 24.654626427023796,
+      "baseline_mean": -0.36553349763244647,
+      "p_value": 1.053716613202627e-62,
+      "p_value_corrected": 6.322299679215761e-62,
+      "effect_size": 3.978571557056532,
+      "significant": true,
+      "diverse_wins": true
+    },
+    {
+      "baseline": "Momentum",
+      "diverse_mean": 24.654626427023796,
+      "baseline_mean": 0.0473556025426089,
+      "p_value": 6.538471775840501e-65,
+      "p_value_corrected": 3.923083065504301e-64,
+      "effect_size": 4.200780764486419,
+      "significant": true,
+      "diverse_wins": true
+    },
+    {
+      "baseline": "MeanReversion",
+      "diverse_mean": 24.654626427023796,
+      "baseline_mean": -0.0511510948927035,
+      "p_value": 1.3475192990273755e-63,
+      "p_value_corrected": 8.085115794164253e-63,
+      "effect_size": 4.067199817345764,
+      "significant": true,
+      "diverse_wins": true
+    },
+    {
+      "baseline": "BuyAndHold",
+      "diverse_mean": 24.654626427023796,
+      "baseline_mean": 0.33214136180904075,
+      "p_value": 2.421337596288989e-64,
+      "p_value_corrected": 1.4528025577733935e-63,
+      "effect_size": 4.142509005299608,
+      "significant": true,
+      "diverse_wins": true
+    }
+  ]
+}

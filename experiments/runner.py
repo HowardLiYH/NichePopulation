@@ -19,7 +19,7 @@ def run_all_experiments(
 ):
     """
     Run specified experiments.
-    
+
     Args:
         experiments: List of experiment names to run (None = all)
         n_trials: Override number of trials (None = use defaults)
@@ -31,7 +31,7 @@ def run_all_experiments(
         EXP4_CONFIG, EXP5_CONFIG, EXP6_CONFIG,
         ExperimentConfig,
     )
-    
+
     all_experiments = {
         "exp1": ("Emergence of Specialists", EXP1_CONFIG),
         "exp2": ("Value of Diversity", EXP2_CONFIG),
@@ -40,29 +40,29 @@ def run_all_experiments(
         "exp5": ("Regime Transitions", EXP5_CONFIG),
         "exp6": ("Real Data Validation", EXP6_CONFIG),
     }
-    
+
     if experiments is None:
         experiments = list(all_experiments.keys())
-    
+
     print("=" * 60)
     print("EMERGENT SPECIALIZATION EXPERIMENTS")
     print(f"Experiments: {experiments}")
     print(f"Seed: {seed}")
     print(f"Output: {output_dir}")
     print("=" * 60)
-    
+
     results = {}
-    
+
     for exp_name in experiments:
         if exp_name not in all_experiments:
             print(f"Unknown experiment: {exp_name}")
             continue
-        
+
         title, config = all_experiments[exp_name]
         print(f"\n{'=' * 60}")
         print(f"Running: {title}")
         print(f"{'=' * 60}")
-        
+
         # Create a copy of config with overrides
         exp_config = ExperimentConfig(
             experiment_name=config.experiment_name,
@@ -73,7 +73,7 @@ def run_all_experiments(
             regime_duration_std=config.regime_duration_std,
             results_dir=output_dir,
         )
-        
+
         try:
             if exp_name == "exp1":
                 from .exp1_emergence import run_experiment

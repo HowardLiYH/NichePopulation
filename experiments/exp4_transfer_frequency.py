@@ -60,7 +60,7 @@ class FrequencyResult:
     """Aggregate results for a transfer frequency."""
     transfer_frequency: int
     n_trials: int
-    
+
     si_mean: float
     si_std: float
     diversity_mean: float
@@ -88,12 +88,12 @@ def compute_method_entropy(population: Population) -> float:
         usage = agent.get_method_usage_distribution()
         for method, prob in usage.items():
             all_usage[method] = all_usage.get(method, 0) + prob
-    
+
     # Normalize
     total = sum(all_usage.values())
     if total == 0:
         return 0.0
-    
+
     probs = [v / total for v in all_usage.values()]
     entropy = -sum(p * np.log(p + 1e-10) for p in probs if p > 0)
     return entropy
@@ -117,7 +117,7 @@ def run_frequency_trial(
     )
     env = SyntheticMarketEnvironment(env_config)
     prices, regimes = env.generate(config.n_bars, seed=seed)
-    
+
     # Create population with specified transfer frequency
     pop_config = PopulationConfig(
         n_agents=config.n_agents,
@@ -127,25 +127,25 @@ def run_frequency_trial(
         seed=seed,
     )
     population = Population(pop_config)
-    
+
     window_size = 20
     tracker = SpecializationTracker(n_methods=11)
     total_reward = 0.0
-    
+
     for i in range(window_size, min(len(prices) - 1, window_size + 500)):
         current_regime = regimes.iloc[i]
         price_window = prices.iloc[i-window_size:i+1]
-        
+
         result = population.run_iteration(price_window, compute_reward_from_methods, current_regime)
-        total_reward += result.best_reward
-    
+        total_reward += result.winner_reward
+
     # Final metrics
     final_distributions = population.get_all_method_usage()
     final_metrics = tracker.record(config.n_bars, final_distributions, regime=regimes.iloc[-1])
-    
-    diversity = compute_population_diversity(population.agents)
+
+    diversity = compute_population_diversity(population.get_all_method_usage())
     entropy = compute_method_entropy(population)
-    
+
     return FrequencyTrialResult(
         transfer_frequency=transfer_frequency,
         trial_id=trial_id,
@@ -170,26 +170,26 @@ def run_experiment(
     print(f"Frequencies: {transfer_frequencies}")
     print(f"Trials per frequency: {config.n_trials}")
     print(f"=" * 60)
-    
+
     all_trials = []
     frequency_results = {}
-    
+
     for freq in transfer_frequencies:
         print(f"\nTesting τ={freq}...")
-        
+
         freq_trials = []
         for trial_id in tqdm(range(config.n_trials), desc=f"τ={freq}"):
             seed = config.base_seed + freq * 10000 + trial_id * 1000
             result = run_frequency_trial(freq, trial_id, seed, config)
             freq_trials.append(result)
             all_trials.append(result)
-        
+
         # Aggregate for this frequency
         sis = [t.final_si for t in freq_trials]
         diversities = [t.population_diversity for t in freq_trials]
         rewards = [t.total_reward for t in freq_trials]
         entropies = [t.method_entropy for t in freq_trials]
-        
+
         frequency_results[freq] = FrequencyResult(
             transfer_frequency=freq,
             n_trials=config.n_trials,
@@ -202,10 +202,10 @@ def run_experiment(
             entropy_mean=float(np.mean(entropies)),
             entropy_std=float(np.std(entropies)),
         )
-    
+
     # Find optimal frequency (by SI, as we want maximum specialization)
     optimal_frequency = max(frequency_results.keys(), key=lambda f: frequency_results[f].si_mean)
-    
+
     result = ExperimentResult(
         experiment_name=config.experiment_name,
         transfer_frequencies=transfer_frequencies,
@@ -213,7 +213,7 @@ def run_experiment(
         optimal_frequency=optimal_frequency,
         trial_results=all_trials,
     )
-    
+
     # Print summary
     print(f"\n{'=' * 60}")
     print(f"RESULTS: Experiment 4")
@@ -229,12 +229,12 @@ def run_experiment(
               f"{fr.entropy_mean:.3f}±{fr.entropy_std:.3f}")
     print(f"\nOptimal transfer frequency: τ* = {optimal_frequency}")
     print(f"{'=' * 60}")
-    
+
     # Save results
     if save_results:
         results_dir = Path(config.results_dir) / config.experiment_name
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         summary = {
             "experiment_name": result.experiment_name,
             "transfer_frequencies": transfer_frequencies,
@@ -253,31 +253,30 @@ def run_experiment(
                 for f, fr in frequency_results.items()
             },
         }
-        
+
         with open(results_dir / "summary.json", "w") as f:
             json.dump(summary, f, indent=2)
-        
+
         print(f"\nResults saved to {results_dir}")
-    
+
     return result
 
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Run Experiment 4: Transfer Frequency Effect")
     parser.add_argument("--trials", type=int, default=50, help="Trials per frequency")
     parser.add_argument("--seed", type=int, default=42, help="Base random seed")
     parser.add_argument("--frequencies", nargs="+", type=int, default=TRANSFER_FREQUENCIES)
     parser.add_argument("--no-save", action="store_true", help="Don't save results")
-    
+
     args = parser.parse_args()
-    
+
     config = ExperimentConfig(
         experiment_name="exp4_transfer_frequency",
         n_trials=args.trials,
         base_seed=args.seed,
     )
-    
-    result = run_experiment(config, transfer_frequencies=args.frequencies, save_results=not args.no_save)
 
+    result = run_experiment(config, transfer_frequencies=args.frequencies, save_results=not args.no_save)

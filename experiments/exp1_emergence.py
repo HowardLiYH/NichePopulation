@@ -39,7 +39,7 @@ from src.agents.population import Population, PopulationConfig, compute_reward_f
 from src.analysis.specialization import SpecializationTracker, compute_specialization_index
 from src.analysis.statistical_tests import paired_t_test, bootstrap_confidence_interval
 
-from .config import EXP1_CONFIG
+from .config import EXP1_CONFIG, ExperimentConfig
 
 
 @dataclass
@@ -287,18 +287,18 @@ def run_experiment(
         summary = {
             "experiment_name": result.experiment_name,
             "n_trials": result.n_trials,
-            "initial_si_mean": result.initial_si_mean,
-            "initial_si_std": result.initial_si_std,
-            "final_si_mean": result.final_si_mean,
-            "final_si_std": result.final_si_std,
-            "t_statistic": result.t_statistic,
-            "p_value": result.p_value,
-            "effect_size": result.effect_size,
-            "significant": result.significant,
-            "final_si_ci_lower": result.final_si_ci_lower,
-            "final_si_ci_upper": result.final_si_ci_upper,
-            "avg_si_trajectory": result.avg_si_trajectory,
-            "checkpoint_iterations": result.checkpoint_iterations,
+            "initial_si_mean": float(result.initial_si_mean),
+            "initial_si_std": float(result.initial_si_std),
+            "final_si_mean": float(result.final_si_mean),
+            "final_si_std": float(result.final_si_std),
+            "t_statistic": float(result.t_statistic),
+            "p_value": float(result.p_value),
+            "effect_size": float(result.effect_size),
+            "significant": bool(result.significant),
+            "final_si_ci_lower": float(result.final_si_ci_lower),
+            "final_si_ci_upper": float(result.final_si_ci_upper),
+            "avg_si_trajectory": [float(x) for x in result.avg_si_trajectory],
+            "checkpoint_iterations": list(result.checkpoint_iterations),
         }
 
         with open(results_dir / "summary.json", "w") as f:
