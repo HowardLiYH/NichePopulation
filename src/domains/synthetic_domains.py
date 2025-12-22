@@ -33,16 +33,16 @@ TRAFFIC_METHODS = [
 
 class TrafficMethod:
     """Traffic management method."""
-    
+
     def __init__(self, name: str, optimal_regimes: List[str]):
         self.name = name
         self.optimal_regimes = optimal_regimes
-    
+
     def execute(self, observation: np.ndarray) -> Dict:
         """Generate signal based on traffic state."""
         # Simplified: use observation mean as proxy for congestion
         congestion = observation.mean() if len(observation) > 0 else 0.5
-        
+
         if self.name == "RampMetering":
             signal = 1.0 if congestion > 0.6 else -0.5
         elif self.name == "SignalTiming":
@@ -53,7 +53,7 @@ class TrafficMethod:
             signal = 1.0 if congestion > 0.9 else -0.8
         else:
             signal = np.sin(congestion * np.pi)
-        
+
         return {"signal": signal, "confidence": abs(signal)}
 
 
@@ -64,9 +64,9 @@ def create_traffic_environment(
 ) -> Tuple[pd.DataFrame, pd.Series, Dict[str, TrafficMethod]]:
     """
     Create synthetic traffic environment.
-    
+
     State: [flow_rate, density, speed, occupancy]
-    
+
     Regimes:
     - free_flow: Low density, high speed
     - congested: High density, low speed
@@ -74,12 +74,12 @@ def create_traffic_environment(
     - peak_hour: Predictable high demand
     """
     rng = np.random.default_rng(seed)
-    
+
     # Generate regime sequence
     regimes = create_regime_sequence(
         n_bars, TRAFFIC_REGIMES, regime_duration_mean, 30, rng
     )
-    
+
     # Generate state based on regime
     data = []
     for regime in regimes:
@@ -99,16 +99,16 @@ def create_traffic_environment(
             flow = rng.normal(0.6, 0.15)
             density = rng.normal(0.6, 0.1)
             speed = rng.normal(0.5, 0.1)
-        
+
         data.append([
             np.clip(flow, 0, 1),
             np.clip(density, 0, 1),
             np.clip(speed, 0, 1),
             np.clip((density + flow) / 2, 0, 1),
         ])
-    
+
     df = pd.DataFrame(data, columns=["flow", "density", "speed", "occupancy"])
-    
+
     # Create methods
     methods = {
         "RampMetering": TrafficMethod("RampMetering", ["congested", "peak_hour"]),
@@ -120,7 +120,7 @@ def create_traffic_environment(
         "EmergencyResponse": TrafficMethod("EmergencyResponse", ["incident"]),
         "PublicTransit": TrafficMethod("PublicTransit", ["peak_hour", "congested"]),
     }
-    
+
     return df, regimes, methods
 
 
@@ -136,15 +136,15 @@ ENERGY_METHODS = [
 
 class EnergyMethod:
     """Energy management method."""
-    
+
     def __init__(self, name: str, optimal_regimes: List[str]):
         self.name = name
         self.optimal_regimes = optimal_regimes
-    
+
     def execute(self, observation: np.ndarray) -> Dict:
         demand = observation[0] if len(observation) > 0 else 0.5
         renewable = observation[1] if len(observation) > 1 else 0.5
-        
+
         if self.name == "PeakShaving":
             signal = 1.0 if demand > 0.7 else -0.5
         elif self.name == "BatteryStorage":
@@ -155,7 +155,7 @@ class EnergyMethod:
             signal = 1.0 if demand > 0.9 else -0.8
         else:
             signal = np.tanh(demand - renewable)
-        
+
         return {"signal": signal, "confidence": abs(signal)}
 
 
@@ -166,15 +166,15 @@ def create_energy_environment(
 ) -> Tuple[pd.DataFrame, pd.Series, Dict[str, EnergyMethod]]:
     """
     Create synthetic energy grid environment.
-    
+
     State: [demand, renewable_output, grid_frequency, price]
     """
     rng = np.random.default_rng(seed)
-    
+
     regimes = create_regime_sequence(
         n_bars, ENERGY_REGIMES, regime_duration_mean, 30, rng
     )
-    
+
     data = []
     for regime in regimes:
         if regime == "low_demand":
@@ -189,19 +189,19 @@ def create_energy_environment(
         else:  # grid_stress
             demand = rng.normal(0.95, 0.05)
             renewable = rng.normal(0.2, 0.1)
-        
+
         price = np.clip(demand - renewable + 0.5, 0, 1)
         frequency = np.clip(1 - abs(demand - renewable), 0, 1)
-        
+
         data.append([
             np.clip(demand, 0, 1),
             np.clip(renewable, 0, 1),
             frequency,
             price,
         ])
-    
+
     df = pd.DataFrame(data, columns=["demand", "renewable", "frequency", "price"])
-    
+
     methods = {
         "LoadShifting": EnergyMethod("LoadShifting", ["peak_demand", "low_demand"]),
         "PeakShaving": EnergyMethod("PeakShaving", ["peak_demand"]),
@@ -212,7 +212,7 @@ def create_energy_environment(
         "EmergencyReserve": EnergyMethod("EmergencyReserve", ["grid_stress"]),
         "PriceOptimization": EnergyMethod("PriceOptimization", ["low_demand", "renewable_surplus"]),
     }
-    
+
     return df, regimes, methods
 
 
@@ -233,15 +233,15 @@ def create_weather_environment(
 ) -> Tuple[pd.DataFrame, pd.Series, Dict]:
     """
     Create synthetic weather prediction environment.
-    
+
     State: [pressure, temperature, humidity, wind_speed]
     """
     rng = np.random.default_rng(seed)
-    
+
     regimes = create_regime_sequence(
         n_bars, WEATHER_REGIMES, regime_duration_mean, 30, rng
     )
-    
+
     data = []
     for regime in regimes:
         if regime == "stable":
@@ -264,16 +264,16 @@ def create_weather_environment(
             temperature = rng.normal(0.5, 0.1)
             humidity = rng.normal(0.5, 0.1)
             wind = rng.normal(0.4, 0.1)
-        
+
         data.append([
             np.clip(pressure, 0, 1),
             np.clip(temperature, 0, 1),
             np.clip(humidity, 0, 1),
             np.clip(wind, 0, 1),
         ])
-    
+
     df = pd.DataFrame(data, columns=["pressure", "temperature", "humidity", "wind_speed"])
-    
+
     methods = {
         "PersistenceModel": {"optimal_regimes": ["stable"]},
         "NWPModel": {"optimal_regimes": ["approaching_storm", "clearing"]},
@@ -284,7 +284,7 @@ def create_weather_environment(
         "ExtremeEventAlert": {"optimal_regimes": ["active_storm"]},
         "ClimateAdjust": {"optimal_regimes": ["stable", "clearing"]},
     }
-    
+
     return df, regimes, methods
 
 
@@ -305,15 +305,15 @@ def create_ecommerce_environment(
 ) -> Tuple[pd.DataFrame, pd.Series, Dict]:
     """
     Create synthetic e-commerce inventory environment.
-    
+
     State: [demand_level, inventory_level, lead_time, competitor_price]
     """
     rng = np.random.default_rng(seed)
-    
+
     regimes = create_regime_sequence(
         n_bars, ECOMMERCE_REGIMES, regime_duration_mean, 30, rng
     )
-    
+
     data = []
     for regime in regimes:
         if regime == "normal":
@@ -328,19 +328,19 @@ def create_ecommerce_environment(
         else:  # demand_surge
             demand = rng.normal(0.95, 0.05)
             inventory = rng.normal(0.3, 0.1)
-        
+
         lead_time = rng.normal(0.5, 0.2)
         competitor_price = rng.normal(0.5, 0.1)
-        
+
         data.append([
             np.clip(demand, 0, 1),
             np.clip(inventory, 0, 1),
             np.clip(lead_time, 0, 1),
             np.clip(competitor_price, 0, 1),
         ])
-    
+
     df = pd.DataFrame(data, columns=["demand", "inventory", "lead_time", "competitor_price"])
-    
+
     methods = {
         "BaselineForecasting": {"optimal_regimes": ["normal"]},
         "PromotionAware": {"optimal_regimes": ["sale_event"]},
@@ -351,7 +351,7 @@ def create_ecommerce_environment(
         "EmergencyReplenish": {"optimal_regimes": ["stock_shortage"]},
         "DemandShaping": {"optimal_regimes": ["sale_event", "demand_surge"]},
     }
-    
+
     return df, regimes, methods
 
 
@@ -372,15 +372,15 @@ def create_sports_environment(
 ) -> Tuple[pd.DataFrame, pd.Series, Dict]:
     """
     Create synthetic sports strategy environment.
-    
+
     State: [score_differential, time_remaining, possession, fatigue]
     """
     rng = np.random.default_rng(seed)
-    
+
     regimes = create_regime_sequence(
         n_bars, SPORTS_REGIMES, regime_duration_mean, 30, rng
     )
-    
+
     data = []
     for regime in regimes:
         if regime == "leading":
@@ -395,19 +395,19 @@ def create_sports_environment(
         else:  # crunch_time
             score_diff = rng.normal(0.5, 0.15)
             time_remaining = rng.uniform(0, 0.15)
-        
+
         possession = rng.uniform(0.4, 0.6)
         fatigue = rng.normal(0.5, 0.15)
-        
+
         data.append([
             np.clip(score_diff, 0, 1),
             np.clip(time_remaining, 0, 1),
             np.clip(possession, 0, 1),
             np.clip(fatigue, 0, 1),
         ])
-    
+
     df = pd.DataFrame(data, columns=["score_diff", "time_remaining", "possession", "fatigue"])
-    
+
     methods = {
         "Conservative": {"optimal_regimes": ["leading"]},
         "Aggressive": {"optimal_regimes": ["trailing", "crunch_time"]},
@@ -418,7 +418,7 @@ def create_sports_environment(
         "StarPlayer": {"optimal_regimes": ["crunch_time", "trailing"]},
         "RotationManagement": {"optimal_regimes": ["leading", "tied"]},
     }
-    
+
     return df, regimes, methods
 
 
@@ -439,10 +439,9 @@ def get_domain_environment(domain: str, **kwargs):
     """Get environment for a specific domain."""
     if domain not in DOMAIN_CREATORS:
         raise ValueError(f"Unknown domain: {domain}. Available: {list(DOMAIN_CREATORS.keys())}")
-    
+
     creator = DOMAIN_CREATORS[domain]
     if creator is None:
         raise ValueError(f"Domain {domain} uses main financial environment")
-    
-    return creator(**kwargs)
 
+    return creator(**kwargs)

@@ -23,4 +23,3 @@ __all__ = [
     "Proposition1_EquilibriumSpecialization",
     "Proposition2_SIConvergence",
 ]
-
