@@ -106,8 +106,8 @@ emergent_specialization/
 
 ```bash
 # Clone repository
-git clone https://github.com/HowardLiYH/Emergent-Specialization-in-Multi-Agent-Trading.git
-cd Emergent-Specialization-in-Multi-Agent-Trading
+git clone https://github.com/HowardLiYH/Emergent-Specialization-in-Multi-Agent-Systems.git
+cd Emergent-Specialization-in-Multi-Agent-Systems
 
 # Create conda environment
 conda create -n emergent python=3.10
@@ -237,6 +237,6 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 **⭐ Star this repo if you find it useful!**
 
-[Report Bug](https://github.com/HowardLiYH/Emergent-Specialization-in-Multi-Agent-Trading/issues) • [Request Feature](https://github.com/HowardLiYH/Emergent-Specialization-in-Multi-Agent-Trading/issues)
+[Report Bug](https://github.com/HowardLiYH/Emergent-Specialization-in-Multi-Agent-Systems/issues) • [Request Feature](https://github.com/HowardLiYH/Emergent-Specialization-in-Multi-Agent-Systems/issues)
 
 </div>
