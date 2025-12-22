@@ -1,67 +1,76 @@
 """
-Multi-Domain Validation Framework.
+Multi-Domain Support for Emergent Specialization.
 
-This module provides environments and methods for testing emergent
-specialization across multiple domains beyond financial trading.
-
-Supported Domains (Original):
-1. Traffic - Traffic flow optimization with congestion regimes
-2. Energy - Energy grid management with demand regimes
-3. Weather - Weather prediction with meteorological regimes
-4. E-commerce - Inventory management with demand regimes
-5. Sports - Team strategy with game-state regimes
-
-Tier-1 Domains (New):
-1. Air Quality - EPA PM2.5/AQI prediction
-2. Wikipedia - Page view prediction
-3. Solar - Solar irradiance (GHI) prediction
-4. Water - USGS streamflow prediction
-5. Commodities - FRED commodity price prediction
-
-Each domain has:
-- Environment with regime structure
-- Domain-specific methods (strategies)
-- Reward function
+All domains use VERIFIED REAL DATA:
+- Crypto: Bybit exchange data
+- Commodities: FRED (Federal Reserve) data
+- Weather: Open-Meteo historical data
+- Solar: Open-Meteo solar irradiance data
 """
 
-from .base import DomainEnvironment, DomainMethod, DomainConfig
-from .traffic import TrafficDomain
-from .energy import EnergyDomain
-from .synthetic_domains import (
-    create_traffic_environment,
-    create_energy_environment,
-    create_weather_environment,
-    create_ecommerce_environment,
-    create_sports_environment,
-)
+from . import crypto
+from . import commodities
+from . import weather
+from . import solar
 
-# Tier-1 domain imports
-from .air_quality import AirQualityDomain, create_air_quality_environment
-from .wikipedia import WikipediaDomain, create_wikipedia_environment
-from .solar import SolarDomain, create_solar_environment
-from .water import WaterDomain, create_water_environment
-from .commodities import CommoditiesDomain, create_commodities_environment
+# Domain registry with metadata
+DOMAINS = {
+    'crypto': {
+        'module': crypto,
+        'data_source': 'Bybit Exchange',
+        'records': '~44K',
+        'verified_real': True,
+    },
+    'commodities': {
+        'module': commodities,
+        'data_source': 'FRED (US Government)',
+        'records': '~5.6K',
+        'verified_real': True,
+    },
+    'weather': {
+        'module': weather,
+        'data_source': 'Open-Meteo API',
+        'records': '~9K',
+        'verified_real': True,
+    },
+    'solar': {
+        'module': solar,
+        'data_source': 'Open-Meteo Solar API',
+        'records': '~117K',
+        'verified_real': True,
+    },
+}
 
-__all__ = [
-    "DomainEnvironment",
-    "DomainMethod",
-    "DomainConfig",
-    "TrafficDomain",
-    "EnergyDomain",
-    "create_traffic_environment",
-    "create_energy_environment",
-    "create_weather_environment",
-    "create_ecommerce_environment",
-    "create_sports_environment",
-    # Tier-1 domains
-    "AirQualityDomain",
-    "WikipediaDomain", 
-    "SolarDomain",
-    "WaterDomain",
-    "CommoditiesDomain",
-    "create_air_quality_environment",
-    "create_wikipedia_environment",
-    "create_solar_environment",
-    "create_water_environment",
-    "create_commodities_environment",
-]
+
+def get_domain(name: str):
+    """Get domain module by name."""
+    if name not in DOMAINS:
+        raise ValueError(f"Unknown domain: {name}. Available: {list(DOMAINS.keys())}")
+    return DOMAINS[name]['module']
+
+
+def list_domains():
+    """List all available domains."""
+    return list(DOMAINS.keys())
+
+
+def verify_all_domains():
+    """Verify all domains can load real data."""
+    results = {}
+
+    for name, info in DOMAINS.items():
+        module = info['module']
+        try:
+            df = module.load_data() if name != 'crypto' else module.load_data('BTC')
+            results[name] = {
+                'status': 'OK',
+                'records': len(df),
+                'source': info['data_source'],
+            }
+        except Exception as e:
+            results[name] = {
+                'status': 'ERROR',
+                'error': str(e),
+            }
+
+    return results

@@ -1,0 +1,55 @@
+% Limitations Section for NeurIPS Paper
+
+\section{Limitations}
+\label{sec:limitations}
+
+\paragraph{Domain Coverage.}
+While we validate emergent specialization across four diverse domains 
+(Crypto, Commodities, Weather, Solar), these represent a subset of 
+possible applications. Extension to other domains such as healthcare, 
+traffic management, or natural language processing remains future work.
+Network restrictions prevented us from accessing USGS water data and 
+EIA energy data, limiting our validation to four domains rather than six.
+
+\paragraph{Regime Detection.}
+Our regime classification relies on domain-specific heuristics 
+(e.g., MA crossover for finance, temperature thresholds for weather).
+While effective, these are not universally optimal. Learned regime 
+detection could potentially improve results, but at the cost of 
+additional complexity and potential overfitting.
+
+\paragraph{Simplified Competition Model.}
+Our competition mechanism uses winner-take-all dynamics with a 
+fixed niche bonus $\lambda=0.3$. Real-world multi-agent systems 
+may exhibit more complex reward structures, partial information, 
+or dynamic competition intensity. Our theoretical analysis assumes 
+static environments; extending to non-stationary settings is future work.
+
+\paragraph{Computational Efficiency.}
+While our approach is computationally efficient compared to deep 
+MARL methods, the iterative learning process still requires 
+significant computation for large-scale applications. We did not 
+extensively optimize hyperparameters due to time constraints; 
+additional tuning may yield improved results.
+
+\paragraph{Baseline Scope.}
+Our MARL comparison focuses on Independent Q-Learning (IQL) 
+as the primary baseline. While we implemented QMIX and MAPPO, 
+the simplified task structure may not fully leverage their 
+coordination capabilities. More sophisticated environments 
+with explicit coordination requirements could better showcase 
+differences between approaches.
+
+\paragraph{Generalization to Continuous Actions.}
+Our framework assumes discrete method/strategy selection. 
+Extension to continuous action spaces (e.g., portfolio weights) 
+would require additional mechanism design to maintain the 
+niche-based competition structure.
+
+\paragraph{Statistical Limitations.}
+With 30 trials per domain and 4 domains, some statistical tests 
+(particularly cross-domain comparisons) have limited power. 
+Larger-scale experiments with more trials could provide stronger 
+statistical evidence, particularly for the Weather domain where 
+improvement over baseline is marginal (+6.4\%).
+

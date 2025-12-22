@@ -1,148 +1,139 @@
 """
-Solar Domain - Solar irradiance (GHI) prediction with weather regimes.
+Solar Irradiance Domain - Using REAL Open-Meteo data.
 
-Regimes: clear, partly_cloudy, overcast, storm
-Methods: Persistence, MA6, ClearSkyModel, Seasonal
+Data Source: Open-Meteo Historical Solar API
+- 5 US locations: Phoenix AZ, Las Vegas NV, Denver CO, Miami FL, Seattle WA
+- Variables: GHI, DNI, DHI (Global/Direct/Diffuse Horizontal Irradiance)
 """
 
+import os
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
-import numpy as np
 import pandas as pd
+import numpy as np
 
-from .base import DomainEnvironment, DomainMethod
-
-
-SOLAR_REGIMES = ["clear", "partly_cloudy", "overcast", "storm"]
-SOLAR_METHODS = ["Persistence", "MA6", "ClearSkyModel", "Seasonal"]
+DATA_DIR = Path(__file__).parent.parent.parent / "data" / "solar"
 
 
-class SolarMethod(DomainMethod):
-    """Solar irradiance prediction method."""
-    
-    def __init__(self, name: str, optimal_regimes: List[str]):
-        self.name = name
-        self.optimal_regimes = optimal_regimes
-        self._history = []
-        self._hour_history = {}  # Track by hour for clear sky model
-    
-    def predict(self, current_ghi: float, history: np.ndarray, hour: int = 12, day_of_year: int = 180) -> float:
-        """Predict next GHI value."""
-        if self.name == "Persistence":
-            return current_ghi
-        elif self.name == "MA6":
-            if len(history) >= 6:
-                return np.mean(history[-6:])
-            return current_ghi
-        elif self.name == "ClearSkyModel":
-            # Simplified clear sky model based on hour
-            # Peak at noon, zero at night
-            if 6 <= hour <= 18:
-                # Solar elevation approximation
-                solar_angle = np.sin(np.pi * (hour - 6) / 12)
-                # Seasonal adjustment
-                seasonal = 1 + 0.3 * np.cos(2 * np.pi * (day_of_year - 172) / 365)
-                clear_sky_ghi = 1000 * solar_angle * seasonal
-                return max(0, clear_sky_ghi)
-            return 0
-        elif self.name == "Seasonal":
-            # Use same hour from yesterday
-            if len(history) >= 24:
-                return history[-24]
-            return current_ghi
-        return current_ghi
-    
-    def execute(self, observation: np.ndarray) -> Dict:
-        """Execute method on observation."""
-        ghi = observation[0] if len(observation) > 0 else 500
-        hour = int(observation[1]) if len(observation) > 1 else 12
-        doy = int(observation[2]) if len(observation) > 2 else 180
-        
-        prediction = self.predict(ghi, np.array(self._history), hour, doy)
-        self._history.append(ghi)
-        if len(self._history) > 48:
-            self._history = self._history[-48:]
-        
-        # Signal based on prediction error
-        if ghi > 0:
-            error_pct = (prediction - ghi) / max(ghi, 100)
+def load_data() -> pd.DataFrame:
+    """Load REAL solar irradiance data from Open-Meteo."""
+
+    # Use verified real Open-Meteo data
+    real_path = DATA_DIR / "openmeteo_real_irradiance.csv"
+
+    if real_path.exists():
+        df = pd.read_csv(real_path, parse_dates=['datetime'])
+        print(f"[Solar] Loaded {len(df)} REAL records from Open-Meteo")
+        return df
+
+    raise FileNotFoundError(
+        f"Real solar data not found at {real_path}. "
+        "Run scripts/download_real_solar.py first."
+    )
+
+
+def detect_regime(df: pd.DataFrame) -> pd.Series:
+    """
+    Detect solar irradiance regimes.
+
+    Regimes (based on clear sky index):
+    - clear: CSI > 0.8 (clear sky)
+    - partly_cloudy: 0.5 < CSI <= 0.8
+    - overcast: 0.2 < CSI <= 0.5
+    - storm: CSI <= 0.2 (heavy clouds/storm)
+    """
+
+    if 'regime' in df.columns:
+        return df['regime']
+
+    def get_regime(row):
+        csi = row.get('clear_sky_index', 0.5)
+        ghi = row.get('ghi', 0)
+
+        if pd.isna(csi) or ghi < 50:
+            return 'overcast'
+        elif csi > 0.8:
+            return 'clear'
+        elif csi > 0.5:
+            return 'partly_cloudy'
+        elif csi > 0.2:
+            return 'overcast'
         else:
-            error_pct = 0
-        signal = np.clip(error_pct, -1, 1)
-        return {"signal": signal, "prediction": prediction, "confidence": 0.5}
+            return 'storm'
+
+    return df.apply(get_regime, axis=1)
 
 
-def load_solar_data(data_path: Optional[str] = None) -> pd.DataFrame:
-    """Load solar irradiance data from CSV."""
-    if data_path is None:
-        data_path = Path(__file__).parent.parent.parent / "data" / "solar" / "nrel_irradiance.csv"
-    
-    df = pd.read_csv(data_path)
-    df['datetime'] = pd.to_datetime(df['datetime'])
-    return df
-
-
-def create_solar_environment(
-    n_bars: int = 2000,
-    location: str = "Phoenix_AZ",
-    seed: Optional[int] = None,
-) -> Tuple[pd.DataFrame, pd.Series, Dict[str, SolarMethod]]:
+def get_prediction_methods():
     """
-    Create solar irradiance prediction environment from real data.
-    
-    State: [ghi, hour, day_of_year, ghi_ma6]
+    Return solar-specific prediction methods.
+
+    Methods:
+    - Naive: Persistence (next hour = current hour)
+    - MA6: 6-hour moving average
+    - ClearSky: Use clear sky model
+    - Seasonal: Same hour yesterday
+    - Hybrid: Blend of methods
     """
-    df = load_solar_data()
-    
-    # Filter by location
-    loc_df = df[df['location'] == location].copy()
-    if len(loc_df) == 0:
-        location = df['location'].iloc[0]
-        loc_df = df[df['location'] == location].copy()
-    
-    loc_df = loc_df.sort_values('datetime').reset_index(drop=True)
-    
-    # Sample if needed
-    if len(loc_df) > n_bars:
-        if seed is not None:
-            np.random.seed(seed)
-        start_idx = np.random.randint(0, len(loc_df) - n_bars)
-        loc_df = loc_df.iloc[start_idx:start_idx + n_bars].reset_index(drop=True)
-    
-    # Extract state features
-    state_df = pd.DataFrame({
-        'ghi': loc_df['ghi'],
-        'hour': loc_df['hour'],
-        'day_of_year': loc_df['day_of_year'],
-        'ghi_ma6': loc_df['ghi_ma6'],
-    })
-    
-    regimes = pd.Series(loc_df['regime'].values)
-    
-    # Create methods
-    methods = {
-        "Persistence": SolarMethod("Persistence", ["clear"]),
-        "MA6": SolarMethod("MA6", ["partly_cloudy"]),
-        "ClearSkyModel": SolarMethod("ClearSkyModel", ["clear"]),
-        "Seasonal": SolarMethod("Seasonal", ["clear", "partly_cloudy"]),
+
+    def naive_predict(df, idx):
+        """Persistence forecast."""
+        if idx < 1:
+            return df['ghi'].iloc[0]
+        return df['ghi'].iloc[idx - 1]
+
+    def ma6_predict(df, idx):
+        """6-hour moving average."""
+        if idx < 6:
+            return df['ghi'].iloc[:max(idx, 1)].mean()
+        return df['ghi'].iloc[idx-6:idx].mean()
+
+    def clear_sky_predict(df, idx):
+        """Clear sky model prediction."""
+        if 'clear_sky_ghi' in df.columns:
+            if idx < len(df):
+                return df['clear_sky_ghi'].iloc[idx]
+        # Fallback to persistence
+        return naive_predict(df, idx)
+
+    def seasonal_predict(df, idx):
+        """Same hour yesterday (24 hours ago)."""
+        if idx < 24:
+            return df['ghi'].iloc[max(idx-1, 0)]
+        return df['ghi'].iloc[idx - 24]
+
+    def hybrid_predict(df, idx):
+        """Blend persistence and clear sky."""
+        persist = naive_predict(df, idx)
+        clear = clear_sky_predict(df, idx)
+
+        # Weight by recent accuracy (simplified)
+        return 0.6 * persist + 0.4 * clear
+
+    return {
+        'naive': naive_predict,
+        'ma6': ma6_predict,
+        'clear_sky': clear_sky_predict,
+        'seasonal': seasonal_predict,
+        'hybrid': hybrid_predict,
     }
-    
-    return state_df, regimes, methods
 
 
-class SolarDomain:
-    """Wrapper for solar domain environment."""
-    
-    def __init__(self, n_bars: int = 2000, location: str = "Phoenix_AZ", seed: int = None):
-        self.df, self.regimes, self.methods = create_solar_environment(
-            n_bars=n_bars, location=location, seed=seed
-        )
-    
-    @property
-    def regime_names(self):
-        return SOLAR_REGIMES
-    
-    @property
-    def method_names(self):
-        return SOLAR_METHODS
+def evaluate_prediction(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
+    """Evaluate prediction performance."""
 
+    mse = np.mean((y_true - y_pred) ** 2)
+    rmse = np.sqrt(mse)
+    mae = np.mean(np.abs(y_true - y_pred))
+
+    # For solar, skill score vs persistence is common
+    return {
+        'mse': mse,
+        'rmse': rmse,
+        'mae': mae,
+    }
+
+
+def get_regime_counts() -> dict:
+    """Get regime distribution from data."""
+    df = load_data()
+    return df['regime'].value_counts().to_dict()

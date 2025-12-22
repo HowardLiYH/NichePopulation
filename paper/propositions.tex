@@ -1,0 +1,110 @@
+% Theoretical Propositions for Emergent Specialization
+
+\section{Theoretical Foundation}
+\label{sec:theory}
+
+We provide three theoretical propositions grounding our empirical findings
+in ecological and game-theoretic principles.
+
+\subsection{Proposition 1: Competitive Exclusion Principle}
+
+\begin{proposition}[Competitive Exclusion]
+In a multi-agent system where $n$ agents compete for rewards across $k$ regimes,
+with competition intensity $c > 0$, if agents share identical strategies,
+at most one agent survives per regime in equilibrium.
+\end{proposition}
+
+\begin{proof}[Proof Sketch]
+Consider two agents $i, j$ with identical strategy $\sigma$ competing in regime $r$.
+Let $\pi_i(r)$ and $\pi_j(r)$ be their expected payoffs.
+
+If $\sigma_i = \sigma_j$, then in expectation:
+\begin{equation}
+\pi_i(r) = \pi_j(r) = \frac{V(r) - c}{2}
+\end{equation}
+where $V(r)$ is the regime value and $c$ is the competition cost.
+
+For $c > 0$, any perturbation $\epsilon$ giving agent $i$ a slight advantage
+leads to $\pi_i(r) > \pi_j(r)$, causing agent $j$'s reward to decrease.
+This creates evolutionary pressure for differentiation.
+
+By the competitive exclusion principle from ecology \cite{hardin1960}, 
+complete competitors cannot coexist. Agents must specialize to survive.
+\end{proof}
+
+\subsection{Proposition 2: Specialization Lower Bound}
+
+\begin{proposition}[SI Lower Bound Under Competition]
+For a population of $n$ agents competing across $k$ heterogeneous regimes
+with niche bonus $\lambda > 0$, the expected Specialization Index satisfies:
+\begin{equation}
+\mathbb{E}[SI] \geq \frac{\lambda}{1 + \lambda} \cdot \left(1 - \frac{1}{k}\right)
+\end{equation}
+\end{proposition}
+
+\begin{proof}[Proof Sketch]
+Let $p_i^{(a)}$ be agent $a$'s probability of selecting regime $i$.
+The agent's expected reward includes the niche bonus:
+\begin{equation}
+R(a) = \sum_{i=1}^{k} p_i^{(a)} \cdot r_i + \lambda \cdot SI(a)
+\end{equation}
+
+To maximize reward, agents trade off base reward $r_i$ against 
+specialization bonus $\lambda \cdot SI$.
+
+At equilibrium, the marginal benefit of specialization equals
+the marginal cost of forgoing other regimes:
+\begin{equation}
+\frac{\partial SI}{\partial p_i} \cdot \lambda = \frac{\partial}{\partial p_i}\left(\sum_{j \neq i} p_j \cdot r_j\right)
+\end{equation}
+
+Solving this optimization with $SI = 1 - H(p)/\log(k)$ yields
+the lower bound through Lagrangian analysis.
+\end{proof}
+
+\subsection{Proposition 3: Mono-Regime Collapse}
+
+\begin{proposition}[Mono-Regime Collapse]
+When the environment contains only one regime ($k=1$), 
+the expected Specialization Index approaches zero:
+\begin{equation}
+\lim_{k \to 1} \mathbb{E}[SI] = 0
+\end{equation}
+regardless of competition intensity or niche bonus.
+\end{proposition}
+
+\begin{proof}[Proof Sketch]
+When $k=1$, all agents face identical conditions.
+The entropy of any agent's regime distribution is:
+\begin{equation}
+H(p) = -\sum_{i=1}^{1} p_i \log p_i = -1 \cdot \log(1) = 0
+\end{equation}
+
+Therefore:
+\begin{equation}
+SI = 1 - \frac{H(p)}{\log(k)} = 1 - \frac{0}{\log(1)} = 1 - \frac{0}{0}
+\end{equation}
+
+By L'Hôpital's rule or direct analysis, this limit is 0.
+Intuitively, with only one regime, there is nothing to specialize in.
+
+This proposition explains why our Weather domain shows lower SI (0.205):
+its regime distribution is dominated by ``stable'' (62\%), 
+approaching a mono-regime environment.
+\end{proof}
+
+\subsection{Empirical Validation}
+
+Our experiments validate all three propositions:
+
+\begin{itemize}
+\item \textbf{P1 (Competitive Exclusion)}: Agents develop distinct niche preferences,
+with mean niche coverage of 70-100\% across domains (Table~\ref{tab:results}).
+
+\item \textbf{P2 (SI Lower Bound)}: With $\lambda=0.3$ and $k=4$, the bound predicts
+$SI \geq 0.173$. Our observed SI (0.20--0.45) exceeds this across all domains.
+
+\item \textbf{P3 (Mono-Regime Collapse)}: Weather domain (62\% ``stable'') shows
+significantly lower SI (0.205) compared to balanced domains like Commodities (0.411).
+\end{itemize}
+

@@ -757,3 +757,106 @@ Weather to create a **5-domain paper** with robust cross-domain validation.
 | Statistical rigor | Bonferroni correction (α=0.0125), bootstrap CIs, Cohen's d |
 | Theory | Formal propositions with proof sketches |
 | Figures | 10+ publication-quality figures |
+
+## [2024-12-22] Phase 14: Real Data Acquisition
+
+### Critical Change: All Domains Now Use Verified Real Data
+
+**Problem Identified**: Previous experiments used synthetic/derived data for some domains, which undermines NeurIPS credibility.
+
+**Solution**: Downloaded and verified real data for all 4 domains:
+
+1. **Crypto** (Bybit Exchange)
+   - Source: Direct exchange historical OHLCV
+   - Records: 8,766 per coin (BTC, ETH, SOL, DOGE, XRP)
+   - Verification: Real exchange data
+
+2. **Commodities** (FRED - Federal Reserve)
+   - Source: https://fred.stlouisfed.org
+   - Series: WTI Oil, Copper, Natural Gas
+   - Records: 5,630 daily prices (2015-2024)
+   - Verification: US Government official data
+
+3. **Weather** (Open-Meteo API)
+   - Source: https://archive-api.open-meteo.com
+   - Locations: 5 US cities
+   - Records: 9,105 daily observations
+   - Variables: Temperature, precipitation, wind
+   - Verification: Real meteorological station data
+
+4. **Solar** (Open-Meteo Solar API)
+   - Source: https://archive-api.open-meteo.com
+   - Locations: 5 US locations
+   - Records: 116,834 hourly measurements
+   - Variables: GHI, DNI, DHI irradiance
+   - Verification: Real satellite-derived data
+
+### Domains Excluded (Network Issues)
+- Water (USGS): SSL connection errors
+- Energy (EIA/ENTSOE): Requires API keys
+
+### New Files Created
+- `scripts/download_real_commodities.py` - FRED download
+- `scripts/download_real_weather.py` - Open-Meteo weather
+- `scripts/download_real_solar.py` - Open-Meteo solar
+- `scripts/download_real_usgs_water.py` - USGS (blocked)
+- `data/REAL_DATA_MANIFEST.md` - Data source documentation
+- `src/domains/crypto.py` - Crypto domain module
+- `src/domains/commodities.py` - Commodities domain module
+- `src/domains/weather.py` - Weather domain module
+- `src/domains/solar.py` - Solar domain module
+
+### Data Summary
+| Domain | Records | Source | Verified |
+|--------|---------|--------|----------|
+| Crypto | 43,835 | Bybit | ✅ |
+| Commodities | 5,630 | FRED | ✅ |
+| Weather | 9,105 | Open-Meteo | ✅ |
+| Solar | 116,834 | Open-Meteo | ✅ |
+| **Total** | **175,404** | - | **100%** |
+
+
+## [2024-12-23] Phase 15: Final Results with Real Data
+
+### Experiments Completed
+
+1. **Real Data Experiments (4 domains)**
+   - Crypto: SI = 0.305±0.042, +67% vs baseline
+   - Commodities: SI = 0.411±0.062, +119% vs baseline
+   - Solar: SI = 0.443±0.036, +96% vs baseline
+   - Weather: SI = 0.205±0.026, +6% vs baseline
+
+2. **MARL Baseline Comparison**
+   - NichePopulation outperforms IQL by 2-4x across all domains
+   - Consistent improvement over Random baseline
+
+### New Files Created
+
+- `experiments/exp_real_data_v2.py` - Main experiment script
+- `experiments/exp_marl_comparison.py` - MARL baseline comparison
+- `scripts/generate_real_data_figures.py` - Figure generation
+- `paper/propositions.tex` - 3 theoretical propositions
+- `paper/limitations.tex` - Limitations section
+- `README_RESULTS.md` - Summary of results
+
+### Figures Generated
+
+- `results/figures/fig1_cross_domain_si.pdf`
+- `results/figures/fig2_marl_comparison.pdf`
+- `results/figures/fig3_improvement_scatter.pdf`
+- `results/figures/fig4_regime_distribution.pdf`
+- `results/figures/fig5_summary_heatmap.pdf`
+
+### Results Summary
+
+| Domain | Records | Mean SI | vs Random | vs IQL |
+|--------|---------|---------|-----------|--------|
+| Crypto | 8,766 | 0.305 | +67% | +210% |
+| Commodities | 5,630 | 0.411 | +119% | +359% |
+| Weather | 9,105 | 0.205 | +6% | +98% |
+| Solar | 116,834 | 0.443 | +96% | +294% |
+
+### Key Finding
+
+**Emergent specialization occurs consistently across all 4 real data domains,
+with NichePopulation significantly outperforming MARL baselines.**
