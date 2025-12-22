@@ -1,4 +1,6 @@
-# 🧬 Emergent Specialization in Multi-Agent Trading
+# 🧬 Emergent Specialization in Multi-Agent Systems
+
+### Competition-Driven Niche Partitioning
 
 <div align="center">
 

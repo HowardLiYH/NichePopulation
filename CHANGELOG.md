@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Research Journey: Emergent Specialization in Multi-Agent Trading
+## Research Journey: Emergent Specialization in Multi-Agent Systems
 
 This document chronicles the complete research journey from initial conception to NeurIPS-quality paper.
 
