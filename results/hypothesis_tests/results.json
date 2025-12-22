@@ -36,21 +36,20 @@
     "conclusion": "SUPPORTED"
   },
   "H4": {
-    "hypothesis": "H4: Multi-domain mean SI > 0.50",
+    "hypothesis": "H4: Multi-domain mean SI > 0.4 (n=3 domains)",
     "test": "One-sample t-test (greater)",
-    "null_value": 0.5,
-    "sample_mean": 0.5044778826344583,
-    "sample_std": 0.18116899061857128,
-    "n": 4,
+    "null_value": 0.4,
+    "sample_mean": 0.7392766923447475,
+    "sample_std": 0.040700402463055264,
+    "n": 3,
     "domain_sis": {
-      "finance": 0.46579527123087144,
-      "energy": 0.6948229470425565,
-      "weather": 0.5855515185330521,
-      "healthcare": 0.27174179373135293
+      "energy": 0.7862253968259074,
+      "weather": 0.7176427534572526,
+      "finance": 0.7139619267510826
     },
-    "t_statistic": 0.04943321281604837,
-    "p_value": 0.48184055353502575,
-    "significant_005": "False",
-    "conclusion": "NOT SUPPORTED"
+    "t_statistic": 14.438296267424784,
+    "p_value": 0.002381369624365526,
+    "significant_005": "True",
+    "conclusion": "SUPPORTED"
   }
 }

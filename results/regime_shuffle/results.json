@@ -1,0 +1,76 @@
+{
+  "experiment": "regime_shuffle_test",
+  "date": "2025-12-22T21:58:03.073203",
+  "config": {
+    "n_trials": 30,
+    "n_shuffle_seeds": 10
+  },
+  "results": {
+    "energy": {
+      "original": {
+        "si_mean": 0.7862253968259074,
+        "si_std": 0.029006309857030586,
+        "si_ci_lower": 0.7759782926816067,
+        "si_ci_upper": 0.7965893286868712
+      },
+      "shuffled": {
+        "si_mean": 0.7990218920288322,
+        "si_std": 0.042987307754873694,
+        "si_ci_lower": 0.7904278833289232,
+        "si_ci_upper": 0.8076927978263687,
+        "n_samples": 100
+      },
+      "comparison": {
+        "t_statistic": -1.5175478803807583,
+        "p_value": 0.9342028087929157,
+        "cohens_d": -0.3159027825150523,
+        "significant_001": false,
+        "si_drop_pct": -1.627586091035204
+      }
+    },
+    "weather": {
+      "original": {
+        "si_mean": 0.7176427534572526,
+        "si_std": 0.07441811889041416,
+        "si_ci_lower": 0.6918469953808278,
+        "si_ci_upper": 0.7424316424407652
+      },
+      "shuffled": {
+        "si_mean": 0.7766136112359504,
+        "si_std": 0.046104056896778926,
+        "si_ci_lower": 0.7675066150526176,
+        "si_ci_upper": 0.7856768639575042,
+        "n_samples": 100
+      },
+      "comparison": {
+        "t_statistic": -5.208152253791562,
+        "p_value": 0.9999996298421162,
+        "cohens_d": -1.0841633466760805,
+        "significant_001": false,
+        "si_drop_pct": -8.21729997197143
+      }
+    },
+    "finance": {
+      "original": {
+        "si_mean": 0.7165139669710705,
+        "si_std": 0.028684165250389075,
+        "si_ci_lower": 0.7060230001445,
+        "si_ci_upper": 0.726420252837692
+      },
+      "shuffled": {
+        "si_mean": 0.689601982082133,
+        "si_std": 0.03983401922692163,
+        "si_ci_lower": 0.6814910174506699,
+        "si_ci_upper": 0.6982054798703865,
+        "n_samples": 100
+      },
+      "comparison": {
+        "t_statistic": 3.4157755185864977,
+        "p_value": 0.0004263646671908798,
+        "cohens_d": 0.711050375885031,
+        "significant_001": true,
+        "si_drop_pct": 3.7559609623107484
+      }
+    }
+  }
+}
