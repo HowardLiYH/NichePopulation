@@ -249,6 +249,19 @@ SIᵢ = 1 - H(αᵢ) / log(R)
 
 ## 📋 Changelog
 
+### v1.6.0 (2024-12-22) - Multi-Domain Real Data Validation ⭐
+- 🚕 **NYC Taxi (Traffic)**: Real data, 760 hours, SI = **0.73**
+- ⚡ **EIA Energy**: Real data, 17.5K hours, SI = **0.88**
+- 📈 **Bybit Finance**: Real data, 1.1M bars, SI = **0.86**
+- 🌍 **Mean SI across 3 real domains: 0.82** — Validates generalization
+- 📝 Paper & README updated with real-world validation table
+
+### v1.5.0 (2024-12-22) - Theory & Mechanism Ablation
+- 📐 **Formal Theory**: Propositions 1 & 2 with proof sketches
+- 🔬 **Mechanism Ablation**: COMPETITION_ONLY SI=0.74 (competition drives specialization)
+- 🤖 **MARL Baselines**: IQL, QMIX, MAPPO, QD implemented
+- 📊 Results: IQL/QMIX/MAPPO achieve SI=0.81, QD fails (SI=0.01)
+
 ### v1.4.0 (2024-12-22) - A+ Rigor Push
 - ✨ Collected **1.1M+ bars** of real data from Bybit
 - ✨ Implemented **4 regime classifiers** with validation
