@@ -1,0 +1,210 @@
+======================================================================
+EXPERIMENT: REGIME-STRATIFIED REAL DATA (v3)
+======================================================================
+
+==================================================
+Asset: BTCUSDT, Interval: 1D
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.056, Reward=0.18
+    Regime bull: SI=0.053, Reward=0.21
+    Regime sideways: SI=0.041, Reward=1.25
+
+  Classifier: volatility
+    Regime high_vo: SI=0.062, Reward=0.31
+    Regime med_vol: SI=0.054, Reward=0.41
+    Regime low_vol: SI=0.052, Reward=0.24
+
+  Classifier: returns
+    Regime bear: SI=0.057, Reward=0.29
+    Regime bull: SI=0.057, Reward=0.21
+    Regime sideways: SI=0.036, Reward=0.88
+
+  Classifier: combined
+    Regime b: SI=0.056, Reward=0.10
+
+==================================================
+Asset: BTCUSDT, Interval: 4H
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.055, Reward=0.14
+    Regime bull: SI=0.056, Reward=0.07
+    Regime sideways: SI=0.052, Reward=0.22
+
+  Classifier: volatility
+    Regime high_vo: SI=0.066, Reward=0.13
+    Regime med_vol: SI=0.055, Reward=0.13
+    Regime low_vol: SI=0.049, Reward=0.05
+
+  Classifier: returns
+    Regime bear: SI=0.063, Reward=0.10
+    Regime bull: SI=0.060, Reward=0.05
+    Regime sideways: SI=0.055, Reward=0.15
+
+  Classifier: combined
+    Regime b: SI=0.062, Reward=0.14
+
+==================================================
+Asset: BTCUSDT, Interval: 1H
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.055, Reward=0.15
+    Regime bull: SI=0.053, Reward=0.13
+    Regime sideways: SI=0.052, Reward=0.13
+
+  Classifier: volatility
+    Regime high_vo: SI=0.056, Reward=0.02
+    Regime med_vol: SI=0.046, Reward=0.16
+    Regime low_vol: SI=0.046, Reward=0.17
+
+  Classifier: returns
+    Regime bear: SI=0.053, Reward=0.12
+    Regime bull: SI=0.054, Reward=0.14
+    Regime sideways: SI=0.046, Reward=0.12
+
+  Classifier: combined
+    Regime b: SI=0.059, Reward=0.03
+
+==================================================
+Asset: ETHUSDT, Interval: 1D
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.059, Reward=0.28
+    Regime bull: SI=0.062, Reward=0.26
+    Regime sideways: SI=0.039, Reward=1.02
+
+  Classifier: volatility
+    Regime high_vo: SI=0.061, Reward=0.41
+    Regime med_vol: SI=0.055, Reward=0.32
+    Regime low_vol: SI=0.053, Reward=0.22
+
+  Classifier: returns
+    Regime bear: SI=0.053, Reward=0.19
+    Regime bull: SI=0.059, Reward=0.30
+    Regime sideways: SI=0.039, Reward=0.96
+
+  Classifier: combined
+    Regime b: SI=0.059, Reward=0.11
+
+==================================================
+Asset: ETHUSDT, Interval: 4H
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.060, Reward=0.27
+    Regime bull: SI=0.064, Reward=0.16
+    Regime sideways: SI=0.053, Reward=0.20
+
+  Classifier: volatility
+    Regime high_vo: SI=0.061, Reward=0.08
+    Regime med_vol: SI=0.057, Reward=0.15
+    Regime low_vol: SI=0.053, Reward=0.06
+
+  Classifier: returns
+    Regime bear: SI=0.055, Reward=0.26
+    Regime bull: SI=0.062, Reward=0.18
+    Regime sideways: SI=0.055, Reward=0.20
+
+  Classifier: combined
+    Regime b: SI=0.060, Reward=0.11
+
+==================================================
+Asset: ETHUSDT, Interval: 1H
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.052, Reward=0.15
+    Regime bull: SI=0.053, Reward=0.13
+    Regime sideways: SI=0.048, Reward=0.13
+
+  Classifier: volatility
+    Regime high_vo: SI=0.058, Reward=0.11
+    Regime med_vol: SI=0.047, Reward=0.08
+    Regime low_vol: SI=0.043, Reward=0.12
+
+  Classifier: returns
+    Regime bear: SI=0.057, Reward=0.14
+    Regime bull: SI=0.056, Reward=0.13
+    Regime sideways: SI=0.043, Reward=0.13
+
+  Classifier: combined
+    Regime b: SI=0.046, Reward=0.02
+
+==================================================
+Asset: SOLUSDT, Interval: 1D
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.066, Reward=0.58
+    Regime bull: SI=0.058, Reward=0.37
+    Regime sideways: SI=0.037, Reward=3.65
+
+  Classifier: volatility
+    Regime high_vo: SI=0.050, Reward=1.05
+    Regime med_vol: SI=0.054, Reward=0.56
+    Regime low_vol: SI=0.056, Reward=-0.10
+
+  Classifier: returns
+    Regime bear: SI=0.058, Reward=0.47
+    Regime bull: SI=0.059, Reward=0.30
+    Regime sideways: SI=0.042, Reward=4.16
+
+  Classifier: combined
+    Regime b: SI=0.057, Reward=-0.14
+
+==================================================
+Asset: SOLUSDT, Interval: 4H
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.054, Reward=-0.01
+    Regime bull: SI=0.057, Reward=-0.20
+    Regime sideways: SI=0.051, Reward=-0.21
+
+  Classifier: volatility
+    Regime high_vo: SI=0.056, Reward=-0.01
+    Regime med_vol: SI=0.058, Reward=-0.21
+    Regime low_vol: SI=0.051, Reward=-0.24
+
+  Classifier: returns
+    Regime bear: SI=0.057, Reward=-0.03
+    Regime bull: SI=0.054, Reward=-0.22
+    Regime sideways: SI=0.059, Reward=-0.36
+
+  Classifier: combined
+    Regime b: SI=0.055, Reward=0.02
+
+==================================================
+Asset: SOLUSDT, Interval: 1H
+==================================================
+
+  Classifier: ma
+    Regime bear: SI=0.046, Reward=0.02
+    Regime bull: SI=0.052, Reward=0.02
+    Regime sideways: SI=0.042, Reward=-0.03
+
+  Classifier: volatility
+    Regime high_vo: SI=0.060, Reward=0.31
+    Regime med_vol: SI=0.053, Reward=0.20
+    Regime low_vol: SI=0.043, Reward=-0.03
+
+  Classifier: returns
+    Regime bear: SI=0.045, Reward=-0.04
+    Regime bull: SI=0.049, Reward=-0.02
+    Regime sideways: SI=0.045, Reward=-0.04
+
+  Classifier: combined
+    Regime b: SI=0.048, Reward=-0.02
+
+======================================================================
+CORRELATION ANALYSIS
+======================================================================
+SI-Reward Correlation: r=-0.378, p=0.0002
+
+Total time: 1.8 minutes
+
+Results saved to: /Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/results/exp_regime_stratified_v3/results.json

@@ -1,0 +1,104 @@
+======================================================================
+EXPERIMENT: MONO-REGIME VALIDATION (v3)
+======================================================================
+
+Configuration:
+  Regime configs: [1, 2, 3, 4]
+  Trials per config: 100
+  Iterations per trial: 2000
+  Agents: 8
+  Alpha (Bonferroni): 0.01
+
+==================================================
+Running n_regimes = 1 (['trend_up'])
+==================================================
+  Trial 10/100 (elapsed: 5.4s)
+  Trial 20/100 (elapsed: 10.1s)
+  Trial 30/100 (elapsed: 15.7s)
+  Trial 40/100 (elapsed: 22.0s)
+  Trial 50/100 (elapsed: 27.2s)
+  Trial 60/100 (elapsed: 32.2s)
+  Trial 70/100 (elapsed: 37.0s)
+  Trial 80/100 (elapsed: 41.9s)
+  Trial 90/100 (elapsed: 46.8s)
+  Trial 100/100 (elapsed: 51.8s)
+
+  SI: 0.095 [0.094, 0.097]
+
+==================================================
+Running n_regimes = 2 (['trend_up', 'mean_revert'])
+==================================================
+  Trial 10/100 (elapsed: 56.8s)
+  Trial 20/100 (elapsed: 62.8s)
+  Trial 30/100 (elapsed: 67.9s)
+  Trial 40/100 (elapsed: 73.5s)
+  Trial 50/100 (elapsed: 78.7s)
+  Trial 60/100 (elapsed: 83.6s)
+  Trial 70/100 (elapsed: 88.5s)
+  Trial 80/100 (elapsed: 93.5s)
+  Trial 90/100 (elapsed: 99.2s)
+  Trial 100/100 (elapsed: 104.0s)
+
+  SI: 0.057 [0.056, 0.058]
+
+==================================================
+Running n_regimes = 3 (['trend_up', 'mean_revert', 'volatile'])
+==================================================
+  Trial 10/100 (elapsed: 110.6s)
+  Trial 20/100 (elapsed: 117.2s)
+  Trial 30/100 (elapsed: 123.5s)
+  Trial 40/100 (elapsed: 130.6s)
+  Trial 50/100 (elapsed: 136.6s)
+  Trial 60/100 (elapsed: 142.2s)
+  Trial 70/100 (elapsed: 148.0s)
+  Trial 80/100 (elapsed: 153.5s)
+  Trial 90/100 (elapsed: 158.7s)
+  Trial 100/100 (elapsed: 164.7s)
+
+  SI: 0.043 [0.042, 0.044]
+
+==================================================
+Running n_regimes = 4 (['trend_up', 'trend_down', 'mean_revert', 'volatile'])
+==================================================
+  Trial 10/100 (elapsed: 170.1s)
+  Trial 20/100 (elapsed: 175.3s)
+  Trial 30/100 (elapsed: 180.4s)
+  Trial 40/100 (elapsed: 186.3s)
+  Trial 50/100 (elapsed: 192.3s)
+  Trial 60/100 (elapsed: 197.8s)
+  Trial 70/100 (elapsed: 203.6s)
+  Trial 80/100 (elapsed: 208.5s)
+  Trial 90/100 (elapsed: 213.5s)
+  Trial 100/100 (elapsed: 218.2s)
+
+  SI: 0.035 [0.034, 0.036]
+
+======================================================================
+HYPOTHESIS TESTS
+======================================================================
+
+H1: Mono-regime SI < 0.15
+  Observed SI: 0.095
+  95% CI: [0.094, 0.096]
+  p-value: 0.000000
+  Result: ✓ PASS
+
+H2: SI increases with regime count
+  Spearman r: -0.950
+  p-value: 1.000000
+  Result: ✗ FAIL
+
+======================================================================
+RESULTS SUMMARY
+======================================================================
+
+ Regimes         SI               95% CI
+----------------------------------------
+       1      0.095       [0.094, 0.097]
+       2      0.057       [0.056, 0.058]
+       3      0.043       [0.042, 0.044]
+       4      0.035       [0.034, 0.036]
+
+Total time: 3.6 minutes
+
+Results saved to: /Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/results/exp_mono_regime_v3/results.json

@@ -1,0 +1,42 @@
+======================================================================
+EXPERIMENT: DISTRIBUTION-MATCHED GENERALIZATION (v3)
+======================================================================
+
+==================================================
+Testing generalization to: trend_up
+==================================================
+  Train SI: 0.027
+  Test Reward: 0.268 ± 0.008
+
+==================================================
+Testing generalization to: trend_down
+==================================================
+  Train SI: 0.027
+  Test Reward: 0.068 ± 0.008
+
+==================================================
+Testing generalization to: mean_revert
+==================================================
+  Train SI: 0.027
+  Test Reward: 0.123 ± 0.006
+
+==================================================
+Testing generalization to: volatile
+==================================================
+  Train SI: 0.027
+  Test Reward: 0.499 ± 0.022
+
+======================================================================
+GENERALIZATION SUMMARY
+======================================================================
+
+Test Regime       Train SI     Test Reward
+---------------------------------------------
+trend_up             0.027      0.268 ± 0.008
+trend_down           0.027      0.068 ± 0.008
+mean_revert          0.027      0.123 ± 0.006
+volatile             0.027      0.499 ± 0.022
+
+Total time: 0.6 minutes
+
+Results saved to: /Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/results/exp_distribution_matched_v3/results.json

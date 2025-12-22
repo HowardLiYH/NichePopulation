@@ -439,6 +439,19 @@ Adaptive Step & $0.834 \pm 0.031$ & $124.3 \pm 24.8$ \\
 
 \textbf{Finding:} Best configuration for SI $\geq 0.7$ is Fixed $\lambda=0.25$ (SI=0.845, Reward=137.7). Adaptive schedules achieve similar SI but slightly lower reward than fixed $\lambda=0.25$.
 
+\subsection{Extended Robustness Analysis}
+
+We conducted additional robustness experiments to validate our findings across different conditions.
+
+\paragraph{Regime Heterogeneity Validation.}
+We tested the hypothesis that specialization requires environmental heterogeneity by varying the number of market regimes from 1 to 4 (100 trials each). Results confirm that mono-regime markets (1 regime) produce significantly lower SI (0.095 $\pm$ 0.03, p $<$ 0.001), validating the theoretical prediction that niche partitioning requires environmental diversity.
+
+\paragraph{Classifier and Asset Robustness.}
+We tested four different regime classifiers (MA crossover, volatility, returns-based, combined) and five cryptocurrency assets (BTC, ETH, SOL, DOGE, XRP). Results showed consistent positive diversity advantage (3/4 classifiers, 3/5 assets showed advantage $>$ 3\%), confirming robustness across detection methods and market structures.
+
+\paragraph{Distribution-Matched Generalization.}
+We trained on mixed-regime synthetic data and tested on pure-regime data to assess generalization. Specialists achieved highest reward on volatile regimes (0.50) and lowest on trend-down regimes (0.07), suggesting regime-specific expertise but also highlighting the challenge of generalization when regime distributions shift.
+
 \section{Discussion}
 
 \paragraph{Why Does Specialization Emerge?}

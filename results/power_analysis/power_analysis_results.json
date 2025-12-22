@@ -1,0 +1,52 @@
+{
+  "H1": {
+    "id": "H1",
+    "name": "Mono-regime produces low SI",
+    "effect_type": "cohen_d",
+    "effect_size": 2.0,
+    "n_required_uncorrected": 4,
+    "n_required_bonferroni": 6,
+    "power_at_100_trials": 1.0,
+    "sufficient": true
+  },
+  "H2": {
+    "id": "H2",
+    "name": "SI increases with regime count",
+    "effect_type": "correlation",
+    "effect_size": 0.9,
+    "n_required_uncorrected": 7,
+    "n_required_bonferroni": 9,
+    "power_at_100_trials": 1.0,
+    "sufficient": true
+  },
+  "H3": {
+    "id": "H3",
+    "name": "Diversity advantage in mixed regimes",
+    "effect_type": "cohen_d",
+    "effect_size": 0.5,
+    "n_required_uncorrected": 63,
+    "n_required_bonferroni": 94,
+    "power_at_100_trials": 0.8238224887847654,
+    "sufficient": true
+  },
+  "H4": {
+    "id": "H4",
+    "name": "SI-entropy positive correlation",
+    "effect_type": "correlation",
+    "effect_size": 0.3,
+    "n_required_uncorrected": 85,
+    "n_required_bonferroni": 125,
+    "power_at_100_trials": 0.6817454608305379,
+    "sufficient": false
+  },
+  "H5": {
+    "id": "H5",
+    "name": "Transaction costs reduce SI",
+    "effect_type": "correlation",
+    "effect_size": -0.5,
+    "n_required_uncorrected": 30,
+    "n_required_bonferroni": 42,
+    "power_at_100_trials": 0.9977030347616374,
+    "sufficient": true
+  }
+}

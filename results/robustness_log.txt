@@ -1,0 +1,15 @@
+======================================================================
+EXPERIMENT: ROBUSTNESS ANALYSIS
+======================================================================
+
+--------------------------------------------------
+CLASSIFIER SENSITIVITY
+--------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_robustness.py", line 434, in <module>
+    run_experiment()
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_robustness.py", line 363, in run_experiment
+    classifier_results = test_classifier_sensitivity()
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_robustness.py", line 128, in test_classifier_sensitivity
+    state = market.step()
+AttributeError: 'SyntheticMarketEnvironment' object has no attribute 'step'

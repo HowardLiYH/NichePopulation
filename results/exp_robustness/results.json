@@ -1,0 +1,213 @@
+{
+  "timestamp": "2025-12-22T11:56:03.091323",
+  "config": {
+    "n_trials": 30,
+    "n_iterations": 1000
+  },
+  "classifier_sensitivity": {
+    "condition": "classifier",
+    "n_conditions": 4,
+    "positive_count": 4,
+    "robust": true,
+    "results": [
+      {
+        "condition_type": "classifier",
+        "condition_value": "ma",
+        "si_mean": 0.03385431621759196,
+        "si_ci": [
+          0.032111605802350215,
+          0.03553804012612471
+        ],
+        "advantage_mean": 7.526881720430109,
+        "advantage_ci": [
+          7.526881720430109,
+          7.526881720430109
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "classifier",
+        "condition_value": "volatility",
+        "si_mean": 0.03963195364564458,
+        "si_ci": [
+          0.037238188037079775,
+          0.04231435291997836
+        ],
+        "advantage_mean": 7.526881720430109,
+        "advantage_ci": [
+          7.526881720430109,
+          7.526881720430109
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "classifier",
+        "condition_value": "returns",
+        "si_mean": 0.03292946490214877,
+        "si_ci": [
+          0.030877070556811367,
+          0.03480869709671148
+        ],
+        "advantage_mean": 7.526881720430109,
+        "advantage_ci": [
+          7.526881720430109,
+          7.526881720430109
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "classifier",
+        "condition_value": "combined",
+        "si_mean": 0.065686658179432,
+        "si_ci": [
+          0.062348757234050346,
+          0.06877450215749233
+        ],
+        "advantage_mean": 7.526881720430109,
+        "advantage_ci": [
+          7.526881720430109,
+          7.526881720430109
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      }
+    ]
+  },
+  "asset_sensitivity": {
+    "condition": "asset",
+    "n_conditions": 5,
+    "positive_count": 4,
+    "robust": true,
+    "results": [
+      {
+        "condition_type": "asset",
+        "condition_value": "BTCUSDT",
+        "si_mean": 0.03296152019110944,
+        "si_ci": [
+          0.031423596782212175,
+          0.03457587865041376
+        ],
+        "advantage_mean": 7.5268817204301,
+        "advantage_ci": [
+          7.5268817204301,
+          7.5268817204301
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "asset",
+        "condition_value": "ETHUSDT",
+        "si_mean": 0.03748365550915408,
+        "si_ci": [
+          0.035575214580418325,
+          0.0397152855070508
+        ],
+        "advantage_mean": 7.5268817204300955,
+        "advantage_ci": [
+          7.5268817204300955,
+          7.5268817204300955
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "asset",
+        "condition_value": "SOLUSDT",
+        "si_mean": 0.03868082826752373,
+        "si_ci": [
+          0.036752915076760484,
+          0.04079104803016982
+        ],
+        "advantage_mean": 7.526881720430106,
+        "advantage_ci": [
+          7.526881720430106,
+          7.526881720430106
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "asset",
+        "condition_value": "DOGEUSDT",
+        "si_mean": 0.03522172607662295,
+        "si_ci": [
+          0.033720436286609784,
+          0.03703566754859191
+        ],
+        "advantage_mean": -7.526881720430103,
+        "advantage_ci": [
+          -7.526881720430103,
+          -7.526881720430103
+        ],
+        "direction": "negative",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "asset",
+        "condition_value": "XRPUSDT",
+        "si_mean": 0.03456284516221948,
+        "si_ci": [
+          0.0328196721276923,
+          0.036317065398150605
+        ],
+        "advantage_mean": 7.5268817204301,
+        "advantage_ci": [
+          7.5268817204301,
+          7.5268817204301
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      }
+    ]
+  },
+  "period_sensitivity": {
+    "condition": "period",
+    "n_conditions": 2,
+    "positive_count": 2,
+    "robust": true,
+    "results": [
+      {
+        "condition_type": "period",
+        "condition_value": "period_1",
+        "si_mean": 0.023777615918609312,
+        "si_ci": [
+          0.022974590091778567,
+          0.024591158856361903
+        ],
+        "advantage_mean": 7.526881720430109,
+        "advantage_ci": [
+          7.526881720430109,
+          7.526881720430109
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      },
+      {
+        "condition_type": "period",
+        "condition_value": "period_2",
+        "si_mean": 0.03068130264837223,
+        "si_ci": [
+          0.02934307403463558,
+          0.03212118723893149
+        ],
+        "advantage_mean": 7.526881720430092,
+        "advantage_ci": [
+          7.526881720430092,
+          7.526881720430092
+        ],
+        "direction": "positive",
+        "n_trials": 10
+      }
+    ]
+  },
+  "summary": {
+    "robust_dimensions": 3,
+    "total_dimensions": 3,
+    "overall_robust": true
+  },
+  "elapsed_seconds": 25.14525604248047
+}

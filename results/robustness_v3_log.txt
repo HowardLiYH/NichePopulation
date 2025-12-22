@@ -1,0 +1,53 @@
+======================================================================
+EXPERIMENT: ROBUSTNESS ANALYSIS
+======================================================================
+
+--------------------------------------------------
+CLASSIFIER SENSITIVITY
+--------------------------------------------------
+  Testing ma...
+    SI=0.034, Adv=7.5%, Dir=positive
+  Testing volatility...
+    SI=0.040, Adv=7.5%, Dir=positive
+  Testing returns...
+    SI=0.033, Adv=7.5%, Dir=positive
+  Testing combined...
+    SI=0.066, Adv=7.5%, Dir=positive
+
+--------------------------------------------------
+ASSET SENSITIVITY
+--------------------------------------------------
+  Testing BTCUSDT...
+    SI=0.033, Adv=7.5%, Dir=positive
+  Testing ETHUSDT...
+    SI=0.037, Adv=7.5%, Dir=positive
+  Testing SOLUSDT...
+    SI=0.039, Adv=7.5%, Dir=positive
+  Testing DOGEUSDT...
+    SI=0.035, Adv=-7.5%, Dir=negative
+  Testing XRPUSDT...
+    SI=0.035, Adv=7.5%, Dir=positive
+
+--------------------------------------------------
+TIME PERIOD SENSITIVITY
+--------------------------------------------------
+  Testing period_1...
+    SI=0.024, Adv=7.5%, Dir=positive
+  Testing period_2...
+    SI=0.031, Adv=7.5%, Dir=positive
+
+======================================================================
+ROBUSTNESS SUMMARY
+======================================================================
+
+Dimension         Conditions   Positive     Robust
+--------------------------------------------------
+Classifier                 4          4      ✓ YES
+Asset                      5          4      ✓ YES
+Time Period                2          2      ✓ YES
+
+Overall robustness: 3/3 dimensions
+
+Total time: 0.4 minutes
+
+Results saved to: /Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/results/exp_robustness/results.json

@@ -1,0 +1,24 @@
+======================================================================
+EXPERIMENT: MONO-REGIME VALIDATION (v3)
+======================================================================
+
+Configuration:
+  Regime counts: [1, 2, 3, 4]
+  Trials per config: 100
+  Iterations per trial: 2000
+  Agents: 8
+  Alpha (Bonferroni): 0.01
+
+==================================================
+Running n_regimes = 1
+==================================================
+Traceback (most recent call last):
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_mono_regime_v3.py", line 400, in <module>
+    run_experiment()
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_mono_regime_v3.py", line 315, in run_experiment
+    trial_result = run_single_trial(n_regimes, trial_id)
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_mono_regime_v3.py", line 123, in run_single_trial
+    market = create_market(n_regimes)
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_mono_regime_v3.py", line 106, in create_market
+    config = SyntheticMarketConfig(
+TypeError: SyntheticMarketConfig.__init__() got an unexpected keyword argument 'regime_characteristics'

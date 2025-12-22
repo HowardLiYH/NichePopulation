@@ -1,0 +1,178 @@
+{
+  "asset": "BTCUSDT",
+  "interval": "1D",
+  "timestamp": "2025-12-22T11:17:30.417615",
+  "data_points": 1461,
+  "tests": {
+    "bootstrap_stability": {
+      "ma": {
+        "classifier": "ma",
+        "n_bootstrap": 50,
+        "mean_kappa": 0.4164446134470495,
+        "std_kappa": 0.14022632753484926,
+        "min_kappa": 0.09136730715678089,
+        "max_kappa": 0.643413280093045,
+        "passed": "False"
+      },
+      "volatility": {
+        "classifier": "volatility",
+        "n_bootstrap": 50,
+        "mean_kappa": 0.4250728671187127,
+        "std_kappa": 0.0906814293684368,
+        "min_kappa": 0.194987012110785,
+        "max_kappa": 0.6180295516648112,
+        "passed": "False"
+      },
+      "returns": {
+        "classifier": "returns",
+        "n_bootstrap": 50,
+        "mean_kappa": 0.2847367748536012,
+        "std_kappa": 0.1024167850950903,
+        "min_kappa": 0.026993599128931782,
+        "max_kappa": 0.45882875875097234,
+        "passed": "False"
+      },
+      "combined": {
+        "classifier": "combined",
+        "n_bootstrap": 50,
+        "mean_kappa": 1.0,
+        "std_kappa": 0.0,
+        "min_kappa": 1.0,
+        "max_kappa": 1.0,
+        "passed": "True"
+      }
+    },
+    "cross_agreement": {
+      "methods": [
+        "ma",
+        "volatility",
+        "returns",
+        "combined"
+      ],
+      "kappa_matrix": {
+        "ma": {
+          "ma": 1.0,
+          "volatility": -0.0017131128474685857,
+          "returns": 0.5730955332691879,
+          "combined": 0.0
+        },
+        "volatility": {
+          "ma": -0.0017131128474685857,
+          "volatility": 1.0,
+          "returns": -0.004966740970943257,
+          "combined": 0.0
+        },
+        "returns": {
+          "ma": 0.5730955332691879,
+          "volatility": -0.004966740970943257,
+          "returns": 1.0,
+          "combined": 0.0
+        },
+        "combined": {
+          "ma": 0.0,
+          "volatility": 0.0,
+          "returns": 0.0,
+          "combined": 1.0
+        }
+      },
+      "mean_kappa": 0.09440261324179601,
+      "min_kappa": -0.004966740970943257,
+      "max_kappa": 0.5730955332691879,
+      "passed": "False"
+    },
+    "economic_validity": {
+      "events_tested": 8,
+      "events_in_data": 7,
+      "alignment": 1.0,
+      "results": [
+        {
+          "event": "COVID Crash",
+          "date": "2020-03-12",
+          "expected": "bear",
+          "in_data": "False",
+          "predictions": {},
+          "match": null
+        },
+        {
+          "event": "2021 Bull Run Peak",
+          "date": "2021-04-14",
+          "expected": "bull",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bull",
+            "returns": "bull"
+          },
+          "match": "True"
+        },
+        {
+          "event": "May 2021 Crash",
+          "date": "2021-05-19",
+          "expected": "bear",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bear",
+            "returns": "bear"
+          },
+          "match": "True"
+        },
+        {
+          "event": "Nov 2021 ATH",
+          "date": "2021-11-10",
+          "expected": "bull",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bull",
+            "returns": "bull"
+          },
+          "match": "True"
+        },
+        {
+          "event": "LUNA Crash",
+          "date": "2022-05-12",
+          "expected": "bear",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bear",
+            "returns": "bear"
+          },
+          "match": "True"
+        },
+        {
+          "event": "FTX Collapse",
+          "date": "2022-11-09",
+          "expected": "bear",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bear",
+            "returns": "bear"
+          },
+          "match": "True"
+        },
+        {
+          "event": "2023 Recovery",
+          "date": "2023-10-23",
+          "expected": "bull",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bull",
+            "returns": "bull"
+          },
+          "match": "True"
+        },
+        {
+          "event": "2024 ETF Approval",
+          "date": "2024-01-11",
+          "expected": "bull",
+          "in_data": "True",
+          "predictions": {
+            "ma": "bull",
+            "returns": "bull"
+          },
+          "match": "True"
+        }
+      ],
+      "passed": "True"
+    }
+  },
+  "all_passed": "False"
+}

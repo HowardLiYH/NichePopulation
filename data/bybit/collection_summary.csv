@@ -1,0 +1,26 @@
+asset,interval,rows,start,end,file,status
+BTCUSDT,1D,1461,2021-01-01 00:00:00,2024-12-31 00:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/BTCUSDT_1D.csv,OK
+BTCUSDT,4H,8764,2021-01-01 00:00:00,2024-12-31 12:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/BTCUSDT_4H.csv,OK
+BTCUSDT,1H,35056,2021-01-01 00:00:00,2024-12-31 15:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/BTCUSDT_1H.csv,OK
+BTCUSDT,15m,28000,2024-03-15 00:00:00,2024-12-31 15:45:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/BTCUSDT_15m.csv,OK
+BTCUSDT,5m,199000,2023-02-09 16:40:00,2024-12-31 15:55:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/BTCUSDT_5m.csv,OK
+ETHUSDT,1D,1388,2021-03-15 00:00:00,2024-12-31 00:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/ETHUSDT_1D.csv,OK
+ETHUSDT,4H,8326,2021-03-15 00:00:00,2024-12-31 12:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/ETHUSDT_4H.csv,OK
+ETHUSDT,1H,33304,2021-03-15 00:00:00,2024-12-31 15:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/ETHUSDT_1H.csv,OK
+ETHUSDT,15m,133216,2021-03-15 00:00:00,2024-12-31 15:45:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/ETHUSDT_15m.csv,OK
+ETHUSDT,5m,75000,2024-04-15 06:00:00,2024-12-31 15:55:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/ETHUSDT_5m.csv,OK
+SOLUSDT,1D,1174,2021-10-15 00:00:00,2024-12-31 00:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/SOLUSDT_1D.csv,OK
+SOLUSDT,4H,7042,2021-10-15 00:00:00,2024-12-31 12:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/SOLUSDT_4H.csv,OK
+SOLUSDT,1H,15000,2023-04-16 16:00:00,2024-12-31 15:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/SOLUSDT_1H.csv,OK
+SOLUSDT,15m,112672,2021-10-15 00:00:00,2024-12-31 15:45:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/SOLUSDT_15m.csv,OK
+SOLUSDT,5m,8000,2024-12-03 21:20:00,2024-12-31 15:55:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/SOLUSDT_5m.csv,OK
+DOGEUSDT,1D,1309,2021-06-02 00:00:00,2024-12-31 00:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/DOGEUSDT_1D.csv,OK
+DOGEUSDT,4H,7850,2021-06-02 08:00:00,2024-12-31 12:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/DOGEUSDT_4H.csv,OK
+DOGEUSDT,1H,31398,2021-06-02 10:00:00,2024-12-31 15:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/DOGEUSDT_1H.csv,OK
+DOGEUSDT,15m,125590,2021-06-02 10:30:00,2024-12-31 15:45:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/DOGEUSDT_15m.csv,OK
+DOGEUSDT,5m,30000,2024-09-18 12:00:00,2024-12-31 15:55:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/DOGEUSDT_5m.csv,OK
+XRPUSDT,1D,1329,2021-05-13 00:00:00,2024-12-31 00:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/XRPUSDT_1D.csv,OK
+XRPUSDT,4H,7970,2021-05-13 08:00:00,2024-12-31 12:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/XRPUSDT_4H.csv,OK
+XRPUSDT,1H,31879,2021-05-13 09:00:00,2024-12-31 15:00:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/XRPUSDT_1H.csv,OK
+XRPUSDT,15m,30000,2024-02-23 04:00:00,2024-12-31 15:45:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/XRPUSDT_15m.csv,OK
+XRPUSDT,5m,206000,2023-01-16 09:20:00,2024-12-31 15:55:00,/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/data/bybit/XRPUSDT_5m.csv,OK

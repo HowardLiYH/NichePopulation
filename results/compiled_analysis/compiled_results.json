@@ -1,0 +1,506 @@
+{
+  "summary": {
+    "timestamp": "2025-12-22T11:57:31.305087",
+    "experiments_analyzed": 5,
+    "hypotheses_tested": 3,
+    "bonferroni_correction": {
+      "n_tests": 3,
+      "original_alpha": 0.05,
+      "corrected_alpha": 0.016666666666666666,
+      "p_values": [
+        3.0839084157598537e-89,
+        1.0,
+        0.14748801754569885
+      ],
+      "significant": [
+        true,
+        false,
+        false
+      ],
+      "n_significant": 1
+    },
+    "overall_findings": {
+      "mono_regime_h1_passed": "True",
+      "mono_regime_h2_passed": "False",
+      "cost_h5_passed": "False",
+      "robustness_passed": true
+    }
+  },
+  "mono_regime": {
+    "experiment": "Mono-Regime Validation",
+    "hypotheses": {
+      "H1": {
+        "description": "Mono-regime SI < 0.15",
+        "passed": "True",
+        "observed_si": 0.09512276201394305,
+        "threshold": 0.15,
+        "p_value": 3.0839084157598537e-89,
+        "effect": 0.05487723798605694
+      },
+      "H2": {
+        "description": "SI increases with regime count",
+        "passed": "False",
+        "spearman_r": -0.9502781634493527,
+        "p_value": 1.0
+      }
+    },
+    "results_by_regime_count": {
+      "1": {
+        "n_regimes": 1,
+        "n_trials": 100,
+        "si_mean": 0.09512276201394305,
+        "si_std": 0.007298501342032128,
+        "si_ci_lower": 0.0935006931834486,
+        "si_ci_upper": 0.09659461006609645,
+        "reward_mean": 0.18822179883055856
+      },
+      "2": {
+        "n_regimes": 2,
+        "n_trials": 100,
+        "si_mean": 0.05703966417478548,
+        "si_std": 0.005632615203007519,
+        "si_ci_lower": 0.055884339900252725,
+        "si_ci_upper": 0.05810294195238143,
+        "reward_mean": 0.12436426021418312
+      },
+      "3": {
+        "n_regimes": 3,
+        "n_trials": 100,
+        "si_mean": 0.04302880142764867,
+        "si_std": 0.004121290567037272,
+        "si_ci_lower": 0.04222986950939907,
+        "si_ci_upper": 0.04386424382752779,
+        "reward_mean": 0.18760595441853206
+      },
+      "4": {
+        "n_regimes": 4,
+        "n_trials": 100,
+        "si_mean": 0.034860680242637096,
+        "si_std": 0.0035388604386496977,
+        "si_ci_lower": 0.0341665318537979,
+        "si_ci_upper": 0.035511397539079045,
+        "reward_mean": 0.13630080024128258
+      }
+    }
+  },
+  "cost_transition": {
+    "experiment": "Transaction Cost Phase Transition",
+    "hypothesis": {
+      "description": "Transaction costs reduce SI",
+      "passed": "False",
+      "slope": -8.098983691425671e-05,
+      "r_squared": 0.12078873673491396,
+      "p_value": 0.14748801754569885
+    },
+    "results": [
+      {
+        "cost_percent": 0.0,
+        "si_mean": 0.0344681849797183,
+        "si_std": 0.0030430348925990004,
+        "si_ci": [
+          0.03344094303196713,
+          0.03560308395114244
+        ],
+        "switching_freq_mean": 0.6515333333333332,
+        "diverse_mean": 0.12481540314636437,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.1,
+        "si_mean": 0.03454270477174037,
+        "si_std": 0.0030995976644016057,
+        "si_ci": [
+          0.033388232525016825,
+          0.03562366204799531
+        ],
+        "switching_freq_mean": 0.6514166666666665,
+        "diverse_mean": 0.12235504914383917,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.2,
+        "si_mean": 0.03442097320813813,
+        "si_std": 0.0030342390904811952,
+        "si_ci": [
+          0.03337642965075974,
+          0.035581983683269536
+        ],
+        "switching_freq_mean": 0.6509166666666666,
+        "diverse_mean": 0.12558632534169187,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.30000000000000004,
+        "si_mean": 0.03446609369821875,
+        "si_std": 0.003042196101492966,
+        "si_ci": [
+          0.03338750120132244,
+          0.035540461862953114
+        ],
+        "switching_freq_mean": 0.6511666666666666,
+        "diverse_mean": 0.12308137141897538,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.4,
+        "si_mean": 0.03453919604807287,
+        "si_std": 0.003095790830606212,
+        "si_ci": [
+          0.033419979566519174,
+          0.035648995137316605
+        ],
+        "switching_freq_mean": 0.6512833333333332,
+        "diverse_mean": 0.11914969336659939,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.5,
+        "si_mean": 0.034423824352459456,
+        "si_std": 0.0030341666279648477,
+        "si_ci": [
+          0.03335213644425173,
+          0.03557012123648321
+        ],
+        "switching_freq_mean": 0.6503666666666665,
+        "diverse_mean": 0.12290858867156342,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.6000000000000001,
+        "si_mean": 0.03440625567752035,
+        "si_std": 0.003035848349402997,
+        "si_ci": [
+          0.033305878600372464,
+          0.03557079593892237
+        ],
+        "switching_freq_mean": 0.6516,
+        "diverse_mean": 0.12001895708868024,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.7000000000000001,
+        "si_mean": 0.034505565055345196,
+        "si_std": 0.0030649769286608597,
+        "si_ci": [
+          0.03344093402965117,
+          0.03572859934905359
+        ],
+        "switching_freq_mean": 0.6511833333333332,
+        "diverse_mean": 0.11563277269350387,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.8,
+        "si_mean": 0.03426085283370705,
+        "si_std": 0.0031603890549777875,
+        "si_ci": [
+          0.033174574610295375,
+          0.03534720520910037
+        ],
+        "switching_freq_mean": 0.6507666666666665,
+        "diverse_mean": 0.11544290290704147,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 0.9,
+        "si_mean": 0.034464146049574165,
+        "si_std": 0.0030414522150314476,
+        "si_ci": [
+          0.03334270731151289,
+          0.03551268172534629
+        ],
+        "switching_freq_mean": 0.6504833333333333,
+        "diverse_mean": 0.11479901535318032,
+        "n_trials": 30
+      },
+      {
+        "cost_percent": 1.0,
+        "si_mean": 0.03445972607215848,
+        "si_std": 0.003039897620630922,
+        "si_ci": [
+          0.033295918820195475,
+          0.035561444140484545
+        ],
+        "switching_freq_mean": 0.6515666666666665,
+        "diverse_mean": 0.11620265202076598,
+        "n_trials": 30
+      }
+    ]
+  },
+  "robustness": {
+    "experiment": "Robustness Analysis",
+    "summary": {
+      "robust_dimensions": 3,
+      "total_dimensions": 3,
+      "overall_robust": true
+    },
+    "classifier_sensitivity": {
+      "condition": "classifier",
+      "n_conditions": 4,
+      "positive_count": 4,
+      "robust": true,
+      "results": [
+        {
+          "condition_type": "classifier",
+          "condition_value": "ma",
+          "si_mean": 0.03385431621759196,
+          "si_ci": [
+            0.032111605802350215,
+            0.03553804012612471
+          ],
+          "advantage_mean": 7.526881720430109,
+          "advantage_ci": [
+            7.526881720430109,
+            7.526881720430109
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "classifier",
+          "condition_value": "volatility",
+          "si_mean": 0.03963195364564458,
+          "si_ci": [
+            0.037238188037079775,
+            0.04231435291997836
+          ],
+          "advantage_mean": 7.526881720430109,
+          "advantage_ci": [
+            7.526881720430109,
+            7.526881720430109
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "classifier",
+          "condition_value": "returns",
+          "si_mean": 0.03292946490214877,
+          "si_ci": [
+            0.030877070556811367,
+            0.03480869709671148
+          ],
+          "advantage_mean": 7.526881720430109,
+          "advantage_ci": [
+            7.526881720430109,
+            7.526881720430109
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "classifier",
+          "condition_value": "combined",
+          "si_mean": 0.065686658179432,
+          "si_ci": [
+            0.062348757234050346,
+            0.06877450215749233
+          ],
+          "advantage_mean": 7.526881720430109,
+          "advantage_ci": [
+            7.526881720430109,
+            7.526881720430109
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        }
+      ]
+    },
+    "asset_sensitivity": {
+      "condition": "asset",
+      "n_conditions": 5,
+      "positive_count": 4,
+      "robust": true,
+      "results": [
+        {
+          "condition_type": "asset",
+          "condition_value": "BTCUSDT",
+          "si_mean": 0.03296152019110944,
+          "si_ci": [
+            0.031423596782212175,
+            0.03457587865041376
+          ],
+          "advantage_mean": 7.5268817204301,
+          "advantage_ci": [
+            7.5268817204301,
+            7.5268817204301
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "asset",
+          "condition_value": "ETHUSDT",
+          "si_mean": 0.03748365550915408,
+          "si_ci": [
+            0.035575214580418325,
+            0.0397152855070508
+          ],
+          "advantage_mean": 7.5268817204300955,
+          "advantage_ci": [
+            7.5268817204300955,
+            7.5268817204300955
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "asset",
+          "condition_value": "SOLUSDT",
+          "si_mean": 0.03868082826752373,
+          "si_ci": [
+            0.036752915076760484,
+            0.04079104803016982
+          ],
+          "advantage_mean": 7.526881720430106,
+          "advantage_ci": [
+            7.526881720430106,
+            7.526881720430106
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "asset",
+          "condition_value": "DOGEUSDT",
+          "si_mean": 0.03522172607662295,
+          "si_ci": [
+            0.033720436286609784,
+            0.03703566754859191
+          ],
+          "advantage_mean": -7.526881720430103,
+          "advantage_ci": [
+            -7.526881720430103,
+            -7.526881720430103
+          ],
+          "direction": "negative",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "asset",
+          "condition_value": "XRPUSDT",
+          "si_mean": 0.03456284516221948,
+          "si_ci": [
+            0.0328196721276923,
+            0.036317065398150605
+          ],
+          "advantage_mean": 7.5268817204301,
+          "advantage_ci": [
+            7.5268817204301,
+            7.5268817204301
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        }
+      ]
+    },
+    "period_sensitivity": {
+      "condition": "period",
+      "n_conditions": 2,
+      "positive_count": 2,
+      "robust": true,
+      "results": [
+        {
+          "condition_type": "period",
+          "condition_value": "period_1",
+          "si_mean": 0.023777615918609312,
+          "si_ci": [
+            0.022974590091778567,
+            0.024591158856361903
+          ],
+          "advantage_mean": 7.526881720430109,
+          "advantage_ci": [
+            7.526881720430109,
+            7.526881720430109
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        },
+        {
+          "condition_type": "period",
+          "condition_value": "period_2",
+          "si_mean": 0.03068130264837223,
+          "si_ci": [
+            0.02934307403463558,
+            0.03212118723893149
+          ],
+          "advantage_mean": 7.526881720430092,
+          "advantage_ci": [
+            7.526881720430092,
+            7.526881720430092
+          ],
+          "direction": "positive",
+          "n_trials": 10
+        }
+      ]
+    }
+  },
+  "distribution_matched": {
+    "experiment": "Distribution-Matched Generalization",
+    "results": [
+      {
+        "train_regime_mix": "mixed",
+        "test_regime": "trend_up",
+        "train_si": 0.027195567710433816,
+        "test_reward_mean": 0.2681633955205516,
+        "test_reward_std": 0.008184954719280095,
+        "n_trials": 20
+      },
+      {
+        "train_regime_mix": "mixed",
+        "test_regime": "trend_down",
+        "train_si": 0.026999663988834605,
+        "test_reward_mean": 0.06782747143223569,
+        "test_reward_std": 0.00816860116884312,
+        "n_trials": 20
+      },
+      {
+        "train_regime_mix": "mixed",
+        "test_regime": "mean_revert",
+        "train_si": 0.027172356700503858,
+        "test_reward_mean": 0.12254735645548534,
+        "test_reward_std": 0.006149082202567623,
+        "n_trials": 20
+      },
+      {
+        "train_regime_mix": "mixed",
+        "test_regime": "volatile",
+        "train_si": 0.02717871419097862,
+        "test_reward_mean": 0.49857470358983713,
+        "test_reward_std": 0.022417402748739997,
+        "n_trials": 20
+      }
+    ],
+    "summary": {
+      "mean_train_si": 0.027136575647687726,
+      "best_test_regime": "volatile",
+      "worst_test_regime": "trend_down"
+    }
+  },
+  "stratified": {
+    "experiment": "Regime-Stratified Real Data",
+    "n_segments": 90,
+    "by_classifier": {
+      "ma": {
+        "n_segments": 27,
+        "mean_si": 0.052844155806904256,
+        "mean_reward": 0.3433331780798365
+      },
+      "volatility": {
+        "n_segments": 27,
+        "mean_si": 0.05388624997680306,
+        "mean_reward": 0.17549527363404524
+      },
+      "returns": {
+        "n_segments": 27,
+        "mean_si": 0.05282790471495998,
+        "mean_reward": 0.3244624485045396
+      },
+      "combined": {
+        "n_segments": 9,
+        "mean_si": 0.055739187159977534,
+        "mean_reward": 0.04299660559223491
+      }
+    }
+  }
+}

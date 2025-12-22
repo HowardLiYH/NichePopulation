@@ -1,0 +1,23 @@
+======================================================================
+EXPERIMENT: TRANSACTION COST PHASE TRANSITION (v3)
+======================================================================
+
+Configuration:
+  Cost levels: 21 (0.0% to 1.0%)
+  Trials per level: 100
+  Iterations per trial: 2000
+  Alpha (Bonferroni): 0.01
+
+==================================================
+Cost level 1/21: 0.00%
+==================================================
+Traceback (most recent call last):
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_cost_transition_v3.py", line 350, in <module>
+    run_experiment()
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_cost_transition_v3.py", line 277, in run_experiment
+    result = run_cost_experiment(cost, n_trials=min(N_TRIALS, 30))
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_cost_transition_v3.py", line 121, in run_cost_experiment
+    market = create_market()
+  File "/Users/yuhaoli/code/MAS_For_Finance/emergent_specialization/experiments/exp_cost_transition_v3.py", line 76, in create_market
+    config = SyntheticMarketConfig(
+TypeError: SyntheticMarketConfig.__init__() got an unexpected keyword argument 'regime_characteristics'

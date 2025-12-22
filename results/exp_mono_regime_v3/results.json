@@ -1,0 +1,93 @@
+{
+  "timestamp": "2025-12-22T11:54:43.189352",
+  "config": {
+    "n_trials": 100,
+    "n_iterations": 2000,
+    "regime_configs": {
+      "1": [
+        "trend_up"
+      ],
+      "2": [
+        "trend_up",
+        "mean_revert"
+      ],
+      "3": [
+        "trend_up",
+        "mean_revert",
+        "volatile"
+      ],
+      "4": [
+        "trend_up",
+        "trend_down",
+        "mean_revert",
+        "volatile"
+      ]
+    },
+    "n_agents": 8,
+    "niche_bonus": 0.3,
+    "alpha_corrected": 0.01
+  },
+  "results": {
+    "1": {
+      "n_regimes": 1,
+      "n_trials": 100,
+      "si_mean": 0.09512276201394305,
+      "si_std": 0.007298501342032128,
+      "si_ci_lower": 0.0935006931834486,
+      "si_ci_upper": 0.09659461006609645,
+      "reward_mean": 0.18822179883055856
+    },
+    "2": {
+      "n_regimes": 2,
+      "n_trials": 100,
+      "si_mean": 0.05703966417478548,
+      "si_std": 0.005632615203007519,
+      "si_ci_lower": 0.055884339900252725,
+      "si_ci_upper": 0.05810294195238143,
+      "reward_mean": 0.12436426021418312
+    },
+    "3": {
+      "n_regimes": 3,
+      "n_trials": 100,
+      "si_mean": 0.04302880142764867,
+      "si_std": 0.004121290567037272,
+      "si_ci_lower": 0.04222986950939907,
+      "si_ci_upper": 0.04386424382752779,
+      "reward_mean": 0.18760595441853206
+    },
+    "4": {
+      "n_regimes": 4,
+      "n_trials": 100,
+      "si_mean": 0.034860680242637096,
+      "si_std": 0.0035388604386496977,
+      "si_ci_lower": 0.0341665318537979,
+      "si_ci_upper": 0.035511397539079045,
+      "reward_mean": 0.13630080024128258
+    }
+  },
+  "hypotheses": {
+    "H1": {
+      "hypothesis": "H1: Mono-regime SI < 0.15",
+      "observed_si": 0.09512276201394305,
+      "ci_95": [
+        0.09361867549617311,
+        0.09649443755612795
+      ],
+      "threshold": 0.15,
+      "t_statistic": -74.81284145935899,
+      "p_value_one_tailed": 3.0839084157598537e-89,
+      "significant": "True",
+      "passed": "True"
+    },
+    "H2": {
+      "hypothesis": "H2: SI increases with regime count",
+      "spearman_r": -0.9502781634493527,
+      "p_value_one_tailed": 1.0,
+      "threshold": 0.5,
+      "significant": "False",
+      "passed": "False"
+    }
+  },
+  "all_passed": "False",
+  "elapsed_seconds": 218.74017429351807
+}

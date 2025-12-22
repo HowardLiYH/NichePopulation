@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-12-22T11:53:38.404628",
+  "config": {
+    "n_trials": 50,
+    "n_train_iterations": 1000,
+    "n_test_iterations": 500,
+    "regimes": [
+      "trend_up",
+      "trend_down",
+      "mean_revert",
+      "volatile"
+    ]
+  },
+  "results": [
+    {
+      "train_regime_mix": "mixed",
+      "test_regime": "trend_up",
+      "train_si": 0.027195567710433816,
+      "test_reward_mean": 0.2681633955205516,
+      "test_reward_std": 0.008184954719280095,
+      "n_trials": 20
+    },
+    {
+      "train_regime_mix": "mixed",
+      "test_regime": "trend_down",
+      "train_si": 0.026999663988834605,
+      "test_reward_mean": 0.06782747143223569,
+      "test_reward_std": 0.00816860116884312,
+      "n_trials": 20
+    },
+    {
+      "train_regime_mix": "mixed",
+      "test_regime": "mean_revert",
+      "train_si": 0.027172356700503858,
+      "test_reward_mean": 0.12254735645548534,
+      "test_reward_std": 0.006149082202567623,
+      "n_trials": 20
+    },
+    {
+      "train_regime_mix": "mixed",
+      "test_regime": "volatile",
+      "train_si": 0.02717871419097862,
+      "test_reward_mean": 0.49857470358983713,
+      "test_reward_std": 0.022417402748739997,
+      "n_trials": 20
+    }
+  ],
+  "elapsed_seconds": 34.62524724006653
+}
