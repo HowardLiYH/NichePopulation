@@ -103,18 +103,18 @@ def run_quick_experiment(
     n_trials: int = N_TRIALS
 ) -> Tuple[List[float], List[float]]:
     """Run quick experiment and return SI and advantage values."""
-    
+
     # Convert regimes to strings and get unique values
     regimes = np.array([str(r) for r in regimes])
     unique_regimes = list(set(regimes))
-    
+
     # Ensure we have at least 2 regimes
     if len(unique_regimes) < 2:
         unique_regimes = ["regime_0", "regime_1", "regime_2", "regime_3"]
-    
+
     si_values = []
     advantages = []
-    
+
     for trial in range(n_trials):
         population = NichePopulation(
             n_agents=N_AGENTS,
@@ -123,23 +123,23 @@ def run_quick_experiment(
             seed=trial,
             min_exploration_rate=0.05,
         )
-        
+
         reward_fn = create_reward_fn()
         rewards = []
         n_iters = min(len(prices), N_ITERATIONS)
-        
+
         for i in range(n_iters):
             idx = i % len(prices)
             start_idx = max(0, idx - 20)
             price_window = prices[start_idx:idx+1]
             regime = str(regimes[idx])
-            
+
             # Ensure regime is in population's known regimes
             if regime not in unique_regimes:
                 regime = unique_regimes[0]
-            
+
             result = population.run_iteration(price_window, regime, reward_fn)
-            
+
             if len(price_window) >= 2:
                 ret = (price_window[-1] - price_window[-2]) / price_window[-2]
                 rewards.append(ret * 100)

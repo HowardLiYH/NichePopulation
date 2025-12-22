@@ -76,10 +76,10 @@ def run_train_test(
     n_trials: int = N_TRIALS
 ) -> Tuple[List[float], List[float]]:
     """Train on mixed regimes, test on pure regime."""
-    
+
     train_sis = []
     test_rewards = []
-    
+
     for trial in range(n_trials):
         # Generate training data (mixed regimes)
         train_config = SyntheticMarketConfig(
@@ -91,7 +91,7 @@ def run_train_test(
         train_df, train_regimes_series = train_market.generate(n_bars=N_TRAIN_ITERATIONS, seed=trial)
         train_prices = train_df["close"].values
         train_regime_vals = train_regimes_series.values
-        
+
         # Generate test data (pure regime)
         test_config = SyntheticMarketConfig(
             regime_names=[test_regime],
@@ -101,7 +101,7 @@ def run_train_test(
         test_market = SyntheticMarketEnvironment(test_config)
         test_df, test_regimes_series = test_market.generate(n_bars=N_TEST_ITERATIONS, seed=trial + 1)
         test_prices = test_df["close"].values
-        
+
         # Create and train population
         population = NichePopulation(
             n_agents=N_AGENTS,
@@ -110,16 +110,16 @@ def run_train_test(
             seed=trial,
             min_exploration_rate=0.05,
         )
-        
+
         reward_fn = create_reward_fn()
-        
+
         # Training phase
         for i in range(min(N_TRAIN_ITERATIONS, len(train_prices))):
             regime = train_regime_vals[i]
             start_idx = max(0, i - 20)
             price_window = train_prices[start_idx:i+1]
             population.run_iteration(price_window, regime, reward_fn)
-        
+
         # Compute training SI
         method_usage = population.get_all_method_usage()
         agent_sis = []
@@ -129,22 +129,22 @@ def run_train_test(
                 agent_sis.append(agent_si)
         train_si = np.mean(agent_sis) if agent_sis else 0.0
         train_sis.append(train_si)
-        
+
         # Testing phase (no learning, just evaluation)
         test_trial_rewards = []
         for i in range(min(N_TEST_ITERATIONS, len(test_prices))):
             start_idx = max(0, i - 20)
             price_window = test_prices[start_idx:i+1]
-            
+
             # Run iteration but don't update beliefs
             result = population.run_iteration(price_window, test_regime, reward_fn)
-            
+
             if len(price_window) >= 2:
                 ret = (price_window[-1] - price_window[-2]) / price_window[-2]
                 test_trial_rewards.append(ret * 100)
-        
+
         test_rewards.append(np.mean(test_trial_rewards) if test_trial_rewards else 0)
-    
+
     return train_sis, test_rewards
 
 
@@ -153,22 +153,22 @@ def run_experiment():
     print("=" * 70)
     print("EXPERIMENT: DISTRIBUTION-MATCHED GENERALIZATION (v3)")
     print("=" * 70)
-    
+
     start_time = time.time()
     results: List[GeneralizationResult] = []
-    
+
     # Test generalization to each pure regime
     for test_regime in REGIMES:
         print(f"\n{'='*50}")
         print(f"Testing generalization to: {test_regime}")
         print(f"{'='*50}")
-        
+
         train_sis, test_rewards = run_train_test(
             train_regimes=REGIMES,  # Mixed training
             test_regime=test_regime,
             n_trials=min(N_TRIALS, 20)
         )
-        
+
         result = GeneralizationResult(
             train_regime_mix="mixed",
             test_regime=test_regime,
@@ -178,26 +178,26 @@ def run_experiment():
             n_trials=len(train_sis)
         )
         results.append(result)
-        
+
         print(f"  Train SI: {result.train_si:.3f}")
         print(f"  Test Reward: {result.test_reward_mean:.3f} ± {result.test_reward_std:.3f}")
-    
+
     # Summary
     print("\n" + "=" * 70)
     print("GENERALIZATION SUMMARY")
     print("=" * 70)
     print(f"\n{'Test Regime':<15} {'Train SI':>10} {'Test Reward':>15}")
     print("-" * 45)
-    
+
     for r in results:
         print(f"{r.test_regime:<15} {r.train_si:>10.3f} {r.test_reward_mean:>10.3f} ± {r.test_reward_std:.3f}")
-    
+
     elapsed = time.time() - start_time
     print(f"\nTotal time: {elapsed / 60:.1f} minutes")
-    
+
     # Save results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     output = {
         "timestamp": datetime.now().isoformat(),
         "config": {
@@ -209,13 +209,13 @@ def run_experiment():
         "results": [asdict(r) for r in results],
         "elapsed_seconds": elapsed
     }
-    
+
     output_path = RESULTS_DIR / "results.json"
     with open(output_path, "w") as f:
         json.dump(output, f, indent=2, default=str)
-    
+
     print(f"\nResults saved to: {output_path}")
-    
+
     return output
 
 

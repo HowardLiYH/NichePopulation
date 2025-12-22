@@ -103,9 +103,9 @@ def run_on_segment(
     """Run experiment on a price segment."""
     si_values = []
     rewards_list = []
-    
+
     regimes = ["bull", "bear", "sideways", "volatile"]
-    
+
     for trial in range(n_trials):
         population = NichePopulation(
             n_agents=N_AGENTS,
@@ -114,23 +114,23 @@ def run_on_segment(
             seed=trial,
             min_exploration_rate=0.05,
         )
-        
+
         reward_fn = create_reward_fn()
         rewards = []
         n_iters = min(len(prices), N_ITERATIONS)
-        
+
         for i in range(n_iters):
             idx = i % len(prices)
             start_idx = max(0, idx - 20)
             price_window = prices[start_idx:idx+1]
             regime = regimes[trial % len(regimes)]  # Cycle through regimes
-            
+
             result = population.run_iteration(price_window, regime, reward_fn)
-            
+
             if len(price_window) >= 2:
                 ret = (price_window[-1] - price_window[-2]) / price_window[-2]
                 rewards.append(ret * 100)
-        
+
         # Compute SI
         method_usage = population.get_all_method_usage()
         agent_sis = []
@@ -139,10 +139,10 @@ def run_on_segment(
                 agent_si = compute_specialization_index(agent_methods)
                 agent_sis.append(agent_si)
         si = np.mean(agent_sis) if agent_sis else 0.0
-        
+
         si_values.append(si)
         rewards_list.append(np.mean(rewards) if rewards else 0)
-    
+
     return si_values, rewards_list
 
 
@@ -151,48 +151,48 @@ def run_experiment():
     print("=" * 70)
     print("EXPERIMENT: REGIME-STRATIFIED REAL DATA (v3)")
     print("=" * 70)
-    
+
     start_time = time.time()
     results: List[SegmentResult] = []
-    
+
     classifier = UnifiedRegimeClassifier()
-    
+
     for asset in ASSETS:
         for interval in INTERVALS:
             print(f"\n{'='*50}")
             print(f"Asset: {asset}, Interval: {interval}")
             print(f"{'='*50}")
-            
+
             df = load_data(asset, interval)
             if df is None or len(df) < 100:
                 print(f"  Skipped (insufficient data)")
                 continue
-            
+
             prices = df["close"].values
-            
+
             for clf_name in CLASSIFIERS:
                 print(f"\n  Classifier: {clf_name}")
-                
+
                 try:
                     clf_result = classifier.classify(prices, method=clf_name)
                     regimes = clf_result.labels
                 except Exception as e:
                     print(f"    Error: {e}")
                     continue
-                
+
                 # Get unique regimes
                 unique_regimes = list(set(regimes))
-                
+
                 for regime in unique_regimes:
                     # Get indices for this regime
                     regime_mask = np.array(regimes) == regime
                     regime_prices = prices[regime_mask]
-                    
+
                     if len(regime_prices) < 50:
                         continue
-                    
+
                     si_values, reward_values = run_on_segment(regime_prices, n_trials=min(N_TRIALS, 10))
-                    
+
                     result = SegmentResult(
                         asset=asset,
                         interval=interval,
@@ -205,26 +205,26 @@ def run_experiment():
                         n_trials=len(si_values)
                     )
                     results.append(result)
-                    
+
                     print(f"    Regime {regime}: SI={result.si_mean:.3f}, Reward={result.reward_mean:.2f}")
-    
+
     # Compute correlation between SI and reward
     if len(results) >= 3:
         sis = [r.si_mean for r in results]
         rewards = [r.reward_mean for r in results]
         r, p = stats.pearsonr(sis, rewards)
-        
+
         print("\n" + "=" * 70)
         print("CORRELATION ANALYSIS")
         print("=" * 70)
         print(f"SI-Reward Correlation: r={r:.3f}, p={p:.4f}")
-    
+
     elapsed = time.time() - start_time
     print(f"\nTotal time: {elapsed / 60:.1f} minutes")
-    
+
     # Save results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     output = {
         "timestamp": datetime.now().isoformat(),
         "config": {
@@ -237,13 +237,13 @@ def run_experiment():
         "results": [asdict(r) for r in results],
         "elapsed_seconds": elapsed
     }
-    
+
     output_path = RESULTS_DIR / "results.json"
     with open(output_path, "w") as f:
         json.dump(output, f, indent=2, default=str)
-    
+
     print(f"\nResults saved to: {output_path}")
-    
+
     return output
 
 

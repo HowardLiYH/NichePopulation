@@ -35,9 +35,9 @@ def bonferroni_correction(p_values: List[float], alpha: float = 0.05) -> Dict:
     """Apply Bonferroni correction for multiple comparisons."""
     n_tests = len(p_values)
     corrected_alpha = alpha / n_tests
-    
+
     significant = [p < corrected_alpha for p in p_values]
-    
+
     return {
         "n_tests": n_tests,
         "original_alpha": alpha,
@@ -60,14 +60,14 @@ def analyze_mono_regime():
     data = load_json(RESULTS_DIR / "exp_mono_regime_v3" / "results.json")
     if not data:
         return {"error": "No data found"}
-    
+
     h1 = data.get("hypotheses", {}).get("H1", {})
     h2 = data.get("hypotheses", {}).get("H2", {})
-    
+
     # Effect size for H1 (difference from threshold)
     observed_si = h1.get("observed_si", 0)
     threshold = h1.get("threshold", 0.15)
-    
+
     return {
         "experiment": "Mono-Regime Validation",
         "hypotheses": {
@@ -95,9 +95,9 @@ def analyze_cost_transition():
     data = load_json(RESULTS_DIR / "exp_cost_transition_v3" / "results.json")
     if not data:
         return {"error": "No data found"}
-    
+
     h5 = data.get("hypotheses", {}).get("H5", {})
-    
+
     return {
         "experiment": "Transaction Cost Phase Transition",
         "hypothesis": {
@@ -116,7 +116,7 @@ def analyze_robustness():
     data = load_json(RESULTS_DIR / "exp_robustness" / "results.json")
     if not data:
         return {"error": "No data found"}
-    
+
     return {
         "experiment": "Robustness Analysis",
         "summary": data.get("summary", {}),
@@ -131,9 +131,9 @@ def analyze_distribution_matched():
     data = load_json(RESULTS_DIR / "exp_distribution_matched_v3" / "results.json")
     if not data:
         return {"error": "No data found"}
-    
+
     results = data.get("results", [])
-    
+
     return {
         "experiment": "Distribution-Matched Generalization",
         "results": results,
@@ -150,9 +150,9 @@ def analyze_stratified():
     data = load_json(RESULTS_DIR / "exp_regime_stratified_v3" / "results.json")
     if not data:
         return {"error": "No data found"}
-    
+
     results = data.get("results", [])
-    
+
     # Group by classifier
     by_classifier = {}
     for r in results:
@@ -160,7 +160,7 @@ def analyze_stratified():
         if clf not in by_classifier:
             by_classifier[clf] = []
         by_classifier[clf].append(r)
-    
+
     return {
         "experiment": "Regime-Stratified Real Data",
         "n_segments": len(results),
@@ -180,14 +180,14 @@ def compile_all_results():
     print("=" * 70)
     print("COMPILING EXPERIMENT RESULTS")
     print("=" * 70)
-    
+
     # Collect all analyses
     mono_regime = analyze_mono_regime()
     cost_transition = analyze_cost_transition()
     robustness = analyze_robustness()
     distribution = analyze_distribution_matched()
     stratified = analyze_stratified()
-    
+
     # Collect p-values for Bonferroni correction
     p_values = []
     if "hypotheses" in mono_regime:
@@ -195,9 +195,9 @@ def compile_all_results():
         p_values.append(mono_regime["hypotheses"]["H2"]["p_value"])
     if "hypothesis" in cost_transition:
         p_values.append(cost_transition["hypothesis"]["p_value"])
-    
+
     bonferroni = bonferroni_correction(p_values) if p_values else {}
-    
+
     # Summary statistics
     summary = {
         "timestamp": datetime.now().isoformat(),
@@ -211,12 +211,12 @@ def compile_all_results():
             "robustness_passed": robustness.get("summary", {}).get("overall_robust", False)
         }
     }
-    
+
     # Print summary
     print("\n" + "=" * 70)
     print("SUMMARY OF FINDINGS")
     print("=" * 70)
-    
+
     print("\n1. MONO-REGIME EXPERIMENT:")
     if "hypotheses" in mono_regime:
         h1 = mono_regime["hypotheses"]["H1"]
@@ -225,30 +225,30 @@ def compile_all_results():
         print(f"      Observed SI: {h1['observed_si']:.3f}, p={h1['p_value']:.4f}")
         print(f"   H2 (SI increases with regimes): {'✓ PASS' if h2['passed'] else '✗ FAIL'}")
         print(f"      Spearman r: {h2['spearman_r']:.3f}, p={h2['p_value']:.4f}")
-    
+
     print("\n2. COST TRANSITION EXPERIMENT:")
     if "hypothesis" in cost_transition:
         h5 = cost_transition["hypothesis"]
         print(f"   H5 (Costs reduce SI): {'✓ PASS' if h5['passed'] else '✗ FAIL'}")
         print(f"      Slope: {h5['slope']:.4f}, R²={h5['r_squared']:.3f}, p={h5['p_value']:.4f}")
-    
+
     print("\n3. ROBUSTNESS EXPERIMENT:")
     rob = robustness.get("summary", {})
     print(f"   Overall robust: {'✓ YES' if rob.get('overall_robust', False) else '✗ NO'}")
     print(f"   Robust dimensions: {rob.get('robust_dimensions', 0)}/{rob.get('total_dimensions', 0)}")
-    
+
     print("\n4. DISTRIBUTION-MATCHED EXPERIMENT:")
     dist = distribution.get("summary", {})
     print(f"   Mean train SI: {dist.get('mean_train_si', 0):.3f}")
     print(f"   Best test regime: {dist.get('best_test_regime', 'N/A')}")
     print(f"   Worst test regime: {dist.get('worst_test_regime', 'N/A')}")
-    
+
     print("\n5. REGIME-STRATIFIED EXPERIMENT:")
     strat = stratified
     print(f"   Total segments analyzed: {strat.get('n_segments', 0)}")
     for clf, stats in strat.get("by_classifier", {}).items():
         print(f"   {clf}: {stats['n_segments']} segments, SI={stats['mean_si']:.3f}")
-    
+
     print("\n" + "=" * 70)
     print("BONFERRONI CORRECTION")
     print("=" * 70)
@@ -256,10 +256,10 @@ def compile_all_results():
     print(f"   Original α: {bonferroni.get('original_alpha', 0.05)}")
     print(f"   Corrected α: {bonferroni.get('corrected_alpha', 0):.4f}")
     print(f"   Significant after correction: {bonferroni.get('n_significant', 0)}/{bonferroni.get('n_tests', 0)}")
-    
+
     # Save compiled results
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     output = {
         "summary": summary,
         "mono_regime": mono_regime,
@@ -268,16 +268,15 @@ def compile_all_results():
         "distribution_matched": distribution,
         "stratified": stratified
     }
-    
+
     output_path = OUTPUT_DIR / "compiled_results.json"
     with open(output_path, "w") as f:
         json.dump(output, f, indent=2, default=str)
-    
+
     print(f"\nResults saved to: {output_path}")
-    
+
     return output
 
 
 if __name__ == "__main__":
     compile_all_results()
-

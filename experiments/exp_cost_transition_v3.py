@@ -83,11 +83,11 @@ def create_reward_fn():
 
 def run_cost_experiment(cost_percent: float, n_trials: int = N_TRIALS) -> CostResult:
     """Run experiment for a single cost level."""
-    
+
     si_values = []
     switching_freqs = []
     diverse_rewards = []
-    
+
     for trial in range(n_trials):
         # Create market
         config = SyntheticMarketConfig(
@@ -97,12 +97,12 @@ def run_cost_experiment(cost_percent: float, n_trials: int = N_TRIALS) -> CostRe
             seed=trial * 1000
         )
         market = SyntheticMarketEnvironment(config)
-        
+
         # Generate data
         prices_df, regimes_series = market.generate(n_bars=N_ITERATIONS, seed=trial)
         prices = prices_df["close"].values
         regimes = regimes_series.values
-        
+
         # Create population
         population = NichePopulation(
             n_agents=N_AGENTS,
@@ -111,31 +111,31 @@ def run_cost_experiment(cost_percent: float, n_trials: int = N_TRIALS) -> CostRe
             seed=trial,
             min_exploration_rate=0.05,
         )
-        
+
         reward_fn = create_reward_fn()
-        
+
         trial_rewards = []
         switches = 0
         prev_method = None
-        
+
         for i in range(len(prices)):
             regime = regimes[i]
             start_idx = max(0, i - 20)
             price_window = prices[start_idx:i+1]
-            
+
             result = population.run_iteration(price_window, regime, reward_fn)
-            
+
             current_method = result.get("winner_method", None)
             switched = (prev_method is not None and current_method != prev_method)
             if switched:
                 switches += 1
             prev_method = current_method
-            
+
             if len(price_window) >= 2:
                 ret = (price_window[-1] - price_window[-2]) / price_window[-2]
                 adjusted_reward = apply_transaction_cost(ret * 100, switched, cost_percent)
                 trial_rewards.append(adjusted_reward)
-        
+
         # Compute SI
         method_usage = population.get_all_method_usage()
         agent_sis = []
@@ -144,11 +144,11 @@ def run_cost_experiment(cost_percent: float, n_trials: int = N_TRIALS) -> CostRe
                 agent_si = compute_specialization_index(agent_methods)
                 agent_sis.append(agent_si)
         si = np.mean(agent_sis) if agent_sis else 0.0
-        
+
         si_values.append(si)
         switching_freqs.append(switches / len(prices))
         diverse_rewards.append(np.mean(trial_rewards) if trial_rewards else 0)
-    
+
     # Compute statistics
     def bootstrap_ci(values, confidence=0.95):
         n = len(values)
@@ -157,9 +157,9 @@ def run_cost_experiment(cost_percent: float, n_trials: int = N_TRIALS) -> CostRe
         means = [np.mean(np.random.choice(values, n, replace=True)) for _ in range(1000)]
         alpha = 1 - confidence
         return (np.percentile(means, alpha/2*100), np.percentile(means, (1-alpha/2)*100))
-    
+
     si_ci = bootstrap_ci(si_values)
-    
+
     return CostResult(
         cost_percent=cost_percent,
         si_mean=np.mean(si_values),
@@ -180,32 +180,32 @@ def run_experiment():
     print(f"  Cost levels: {len(COST_LEVELS)} ({min(COST_LEVELS):.2f}% to {max(COST_LEVELS):.2f}%)")
     print(f"  Trials per level: {N_TRIALS}")
     print(f"  Iterations per trial: {N_ITERATIONS}")
-    
+
     start_time = time.time()
     results: List[CostResult] = []
-    
+
     for i, cost in enumerate(COST_LEVELS):
         print(f"\n{'='*50}")
         print(f"Cost level {i+1}/{len(COST_LEVELS)}: {cost:.2f}%")
         print(f"{'='*50}")
-        
+
         result = run_cost_experiment(cost, n_trials=min(N_TRIALS, 30))
         results.append(result)
-        
+
         print(f"  SI: {result.si_mean:.3f} [{result.si_ci[0]:.3f}, {result.si_ci[1]:.3f}]")
         print(f"  Switching freq: {result.switching_freq_mean:.3f}")
-    
+
     # Test hypothesis H5
     print("\n" + "=" * 70)
     print("HYPOTHESIS TESTS")
     print("=" * 70)
-    
+
     costs = [r.cost_percent for r in results]
     sis = [r.si_mean for r in results]
-    
+
     slope, intercept, r_value, p_value, std_err = stats.linregress(costs, sis)
     p_one_tailed = p_value / 2 if slope < 0 else 1 - p_value / 2
-    
+
     h5_result = {
         "hypothesis": "H5: Costs reduce SI",
         "slope": float(slope),
@@ -215,30 +215,30 @@ def run_experiment():
         "significant": p_one_tailed < ALPHA_CORRECTED,
         "passed": slope < 0 and p_one_tailed < ALPHA_CORRECTED
     }
-    
+
     print(f"\nH5: Transaction costs reduce SI")
     print(f"  Slope: {h5_result['slope']:.4f}")
     print(f"  R²: {h5_result['r_squared']:.3f}")
     print(f"  p-value: {h5_result['p_value_one_tailed']:.4f}")
     print(f"  Result: {'✓ PASS' if h5_result['passed'] else '✗ FAIL'}")
-    
+
     # Summary table
     print("\n" + "=" * 70)
     print("RESULTS BY COST LEVEL")
     print("=" * 70)
     print(f"\n{'Cost':>6} {'SI':>10} {'95% CI':>20} {'Switch':>10}")
     print("-" * 50)
-    
+
     for r in results:
         ci_str = f"[{r.si_ci[0]:.3f}, {r.si_ci[1]:.3f}]"
         print(f"{r.cost_percent:>5.2f}% {r.si_mean:>10.3f} {ci_str:>20} {r.switching_freq_mean:>10.3f}")
-    
+
     elapsed = time.time() - start_time
     print(f"\nTotal time: {elapsed / 60:.1f} minutes")
-    
+
     # Save results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     output = {
         "timestamp": datetime.now().isoformat(),
         "config": {
@@ -251,13 +251,13 @@ def run_experiment():
         "hypotheses": {"H5": h5_result},
         "elapsed_seconds": elapsed
     }
-    
+
     output_path = RESULTS_DIR / "results.json"
     with open(output_path, "w") as f:
         json.dump(output, f, indent=2, default=str)
-    
+
     print(f"\nResults saved to: {output_path}")
-    
+
     return output
 
 
