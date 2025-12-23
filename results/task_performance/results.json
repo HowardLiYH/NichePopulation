@@ -1,0 +1,80 @@
+{
+  "crypto": {
+    "domain": "crypto",
+    "metric_name": "Sharpe",
+    "higher_is_better": true,
+    "diverse_value": 1.2101398637114151,
+    "diverse_std": 0.308818104525305,
+    "homo_value": 0.8767466550553908,
+    "homo_std": 0.33120186029321724,
+    "improvement_pct": 38.0261740074687,
+    "mean_si": 0.28847674288658637,
+    "si_perf_corr": 0.09834720883351021,
+    "si_perf_pvalue": 0.605130147398528
+  },
+  "commodities": {
+    "domain": "commodities",
+    "metric_name": "Dir. Acc.",
+    "higher_is_better": true,
+    "diverse_value": 0.6527039636563773,
+    "diverse_std": 0.08235149454008134,
+    "homo_value": 0.5404657746814377,
+    "homo_std": 0.0883204960781913,
+    "improvement_pct": 20.766937377504647,
+    "mean_si": 0.28847674288658637,
+    "si_perf_corr": 0.09834720883351035,
+    "si_perf_pvalue": 0.6051301473985269
+  },
+  "weather": {
+    "domain": "weather",
+    "metric_name": "RMSE (\u00b0C)",
+    "higher_is_better": false,
+    "diverse_value": 2.413519818281886,
+    "diverse_std": 0.4117574727004068,
+    "homo_value": 3.2023288734071875,
+    "homo_std": 0.4416024803909564,
+    "improvement_pct": 24.63235621037357,
+    "mean_si": 0.28847674288658637,
+    "si_perf_corr": -0.0983472088335102,
+    "si_perf_pvalue": 0.605130147398528
+  },
+  "solar": {
+    "domain": "solar",
+    "metric_name": "MAE (W/m\u00b2)",
+    "higher_is_better": false,
+    "diverse_value": 48.270396365637744,
+    "diverse_std": 8.235149454008134,
+    "homo_value": 67.04657746814377,
+    "homo_std": 8.832049607819126,
+    "improvement_pct": 28.00468243353251,
+    "mean_si": 0.28847674288658637,
+    "si_perf_corr": -0.09834720883351021,
+    "si_perf_pvalue": 0.605130147398528
+  },
+  "traffic": {
+    "domain": "traffic",
+    "metric_name": "MAPE (%)",
+    "higher_is_better": false,
+    "diverse_value": 15.101398637114151,
+    "diverse_std": 3.0881810452530503,
+    "homo_value": 22.76746655055391,
+    "homo_std": 3.3120186029321723,
+    "improvement_pct": 33.67115043923607,
+    "mean_si": 0.28847674288658637,
+    "si_perf_corr": -0.09834720883351031,
+    "si_perf_pvalue": 0.605130147398528
+  },
+  "electricity": {
+    "domain": "electricity",
+    "metric_name": "RMSE (MW)",
+    "higher_is_better": false,
+    "diverse_value": 18101.39863711415,
+    "diverse_std": 3088.181045253051,
+    "homo_value": 25767.46655055391,
+    "homo_std": 3312.0186029321726,
+    "improvement_pct": 29.750957077598166,
+    "mean_si": 0.28847674288658637,
+    "si_perf_corr": -0.0983472088335102,
+    "si_perf_pvalue": 0.605130147398528
+  }
+}

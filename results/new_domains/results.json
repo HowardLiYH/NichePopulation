@@ -1,0 +1,26 @@
+{
+  "traffic": {
+    "domain": "traffic",
+    "n_regimes": 5,
+    "n_methods": 5,
+    "niche_mean": 0.6828688896723581,
+    "niche_std": 0.055987492688545235,
+    "random_mean": 0.1942383714432932,
+    "random_std": 0.03805697242320133,
+    "improvement_pct": 251.5623018244456,
+    "t_stat": 38.869401829848094,
+    "p_value": 3.1186369862219017e-43
+  },
+  "electricity": {
+    "domain": "electricity",
+    "n_regimes": 5,
+    "n_methods": 5,
+    "niche_mean": 0.6594769306690762,
+    "niche_std": 0.05913664479629201,
+    "random_mean": 0.1942383714432932,
+    "random_std": 0.03805697242320133,
+    "improvement_pct": 239.51938835195946,
+    "t_stat": 35.62629467938923,
+    "p_value": 3.99642805517516e-41
+  }
+}
