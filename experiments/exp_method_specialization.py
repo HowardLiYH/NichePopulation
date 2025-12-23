@@ -124,7 +124,7 @@ class Agent:
     method_scores: Dict[str, float] = field(default_factory=dict)
     method_counts: Dict[str, int] = field(default_factory=dict)
     regime_method_preference: Dict[str, Dict[str, float]] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         # Initialize uniform preferences
         for method in self.methods:
@@ -134,7 +134,7 @@ class Agent:
 
 class NichePopulation:
     """Population of agents that specialize through competition."""
-    
+
     def __init__(self, domain: str, n_agents: int, niche_bonus: float = 0.3, seed: int = 42):
         self.domain = domain
         self.config = DOMAIN_METHODS[domain]
@@ -143,65 +143,65 @@ class NichePopulation:
         self.affinity = self.config['affinity']
         self.niche_bonus = niche_bonus
         self.rng = np.random.default_rng(seed)
-        
+
         # Create agents
         self.agents = [
             Agent(id=f"agent_{i}", methods=self.methods.copy())
             for i in range(n_agents)
         ]
-        
+
         # Initialize regime-method preferences (uniform)
         for agent in self.agents:
             for regime in self.regimes:
                 agent.regime_method_preference[regime] = {
                     m: 1.0 / len(self.methods) for m in self.methods
                 }
-        
+
         # Track history
         self.performance_history = []
-    
+
     def select_method(self, agent: Agent, regime: str) -> str:
         """Agent selects method using softmax over learned preferences."""
         prefs = agent.regime_method_preference[regime]
         probs = np.array([prefs[m] for m in self.methods])
         probs = probs / probs.sum()  # Normalize
-        
+
         # Epsilon-greedy exploration
         if self.rng.random() < 0.1:
             return self.rng.choice(self.methods)
-        
+
         return self.rng.choice(self.methods, p=probs)
-    
+
     def evaluate_method(self, method: str, regime: str) -> float:
         """Evaluate method performance in regime (with noise)."""
         base_score = self.affinity[regime][method]
         noise = self.rng.normal(0, 0.1)
         return np.clip(base_score + noise, 0, 1)
-    
+
     def run_competition(self, regime: str) -> Tuple[Agent, str, float]:
         """Run competition in a regime. Best performing agent wins."""
         results = []
-        
+
         for agent in self.agents:
             method = self.select_method(agent, regime)
             score = self.evaluate_method(method, regime)
-            
+
             # Niche bonus for specialization
             specialization = agent.regime_method_preference[regime].get(method, 0.2)
             bonus = self.niche_bonus * (specialization - 0.2)
             final_score = score + bonus
-            
+
             results.append((agent, method, final_score, score))
-        
+
         # Winner is agent with highest score
         winner, winning_method, _, base_score = max(results, key=lambda x: x[2])
-        
+
         return winner, winning_method, base_score
-    
+
     def update_preferences(self, winner: Agent, regime: str, method: str, score: float):
         """Update winner's preferences based on outcome."""
         lr = 0.1
-        
+
         # Increase preference for winning method in this regime
         for m in self.methods:
             if m == method:
@@ -212,17 +212,17 @@ class NichePopulation:
                 winner.regime_method_preference[regime][m] = max(
                     0.01, winner.regime_method_preference[regime][m] - lr / (len(self.methods) - 1)
                 )
-        
+
         # Normalize
         total = sum(winner.regime_method_preference[regime].values())
         winner.regime_method_preference[regime] = {
             m: v/total for m, v in winner.regime_method_preference[regime].items()
         }
-        
+
         # Update method scores
         winner.method_scores[method] += score
         winner.method_counts[method] += 1
-    
+
     def run_iteration(self, regime_probs: Dict[str, float]) -> float:
         """Run one iteration of competition."""
         # Sample regime
@@ -230,19 +230,19 @@ class NichePopulation:
         probs = np.array([regime_probs[r] for r in regimes])
         probs = probs / probs.sum()
         regime = self.rng.choice(regimes, p=probs)
-        
+
         # Run competition
         winner, method, score = self.run_competition(regime)
-        
+
         # Update
         self.update_preferences(winner, regime, method, score)
-        
+
         return score
-    
+
     def compute_method_specialization_index(self) -> Dict:
         """Compute Method Specialization Index (MSI) for each agent."""
         agent_msis = []
-        
+
         for agent in self.agents:
             # Average MSI across regimes
             regime_msis = []
@@ -253,19 +253,19 @@ class NichePopulation:
                 max_entropy = np.log(len(self.methods))
                 msi = 1 - entropy / max_entropy
                 regime_msis.append(msi)
-            
+
             agent_msis.append(np.mean(regime_msis))
-        
+
         return {
             'mean': float(np.mean(agent_msis)),
             'std': float(np.std(agent_msis)),
             'values': agent_msis,
         }
-    
+
     def compute_method_coverage(self) -> float:
         """Compute fraction of methods actively used by population."""
         method_usage = {m: 0 for m in self.methods}
-        
+
         for agent in self.agents:
             # Find agent's preferred method across all regimes
             for regime in self.regimes:
@@ -275,36 +275,36 @@ class NichePopulation:
                 )
                 if agent.regime_method_preference[regime][best_method] > 0.3:
                     method_usage[best_method] += 1
-        
+
         # Count methods with significant usage
         used_methods = sum(1 for m, count in method_usage.items() if count > 0)
         return used_methods / len(self.methods)
-    
+
     def get_agent_specializations(self) -> Dict:
         """Get each agent's primary method specialization."""
         specializations = {}
-        
+
         for agent in self.agents:
             # Aggregate preferences across regimes
             method_totals = {m: 0 for m in self.methods}
             for regime in self.regimes:
                 for m, pref in agent.regime_method_preference[regime].items():
                     method_totals[m] += pref
-            
+
             best_method = max(method_totals, key=method_totals.get)
             strength = method_totals[best_method] / sum(method_totals.values())
-            
+
             specializations[agent.id] = {
                 'primary_method': best_method,
                 'strength': float(strength),
             }
-        
+
         return specializations
 
 
 class HomogeneousPopulation:
     """Baseline: All agents use the same method."""
-    
+
     def __init__(self, domain: str, n_agents: int, method: str = None, seed: int = 42):
         self.domain = domain
         self.config = DOMAIN_METHODS[domain]
@@ -312,13 +312,13 @@ class HomogeneousPopulation:
         self.regimes = self.config['regimes']
         self.affinity = self.config['affinity']
         self.rng = np.random.default_rng(seed)
-        
+
         # All agents use the same method (default: best on average)
         if method is None:
             method = self._find_best_average_method()
         self.method = method
         self.n_agents = n_agents
-    
+
     def _find_best_average_method(self) -> str:
         """Find method with best average performance across regimes."""
         method_scores = {m: 0 for m in self.methods}
@@ -326,21 +326,21 @@ class HomogeneousPopulation:
             for method, score in self.affinity[regime].items():
                 method_scores[method] += score
         return max(method_scores, key=method_scores.get)
-    
+
     def evaluate(self, regime_probs: Dict[str, float], n_iterations: int) -> float:
         """Evaluate homogeneous population performance."""
         total_score = 0
-        
+
         for _ in range(n_iterations):
             regimes = list(regime_probs.keys())
             probs = np.array([regime_probs[r] for r in regimes])
             probs = probs / probs.sum()
             regime = self.rng.choice(regimes, p=probs)
-            
+
             # All agents use same method
             score = self.affinity[regime][self.method] + self.rng.normal(0, 0.1)
             total_score += np.clip(score, 0, 1)
-        
+
         return total_score / n_iterations
 
 
@@ -349,59 +349,59 @@ def run_domain_experiment(domain: str, n_trials: int = 30) -> Dict:
     print(f"\n{'='*60}")
     print(f"DOMAIN: {domain.upper()}")
     print(f"{'='*60}")
-    
+
     config = DOMAIN_METHODS[domain]
     regime_probs = {r: 1.0/len(config['regimes']) for r in config['regimes']}
-    
+
     print(f"  Methods: {len(config['methods'])} - {config['methods']}")
     print(f"  Regimes: {len(config['regimes'])} - {config['regimes']}")
-    
+
     # Run NichePopulation trials
     niche_results = []
     niche_msis = []
     niche_coverages = []
     all_specializations = []
-    
+
     for trial in range(n_trials):
         pop = NichePopulation(domain, CONFIG['n_agents'], seed=CONFIG['seed_base'] + trial)
-        
+
         # Training
         scores = []
         for _ in range(CONFIG['n_iterations']):
             score = pop.run_iteration(regime_probs)
             scores.append(score)
-        
+
         # Metrics
         msi = pop.compute_method_specialization_index()
         coverage = pop.compute_method_coverage()
         specs = pop.get_agent_specializations()
-        
+
         niche_results.append(np.mean(scores[-100:]))  # Last 100 iterations
         niche_msis.append(msi['mean'])
         niche_coverages.append(coverage)
         all_specializations.append(specs)
-    
+
     # Run Homogeneous baseline
     homo_results = []
     for trial in range(n_trials):
         homo_pop = HomogeneousPopulation(domain, CONFIG['n_agents'], seed=CONFIG['seed_base'] + trial)
         score = homo_pop.evaluate(regime_probs, CONFIG['n_iterations'])
         homo_results.append(score)
-    
+
     # Statistics
     niche_perf = np.mean(niche_results)
     homo_perf = np.mean(homo_results)
     improvement = (niche_perf - homo_perf) / homo_perf * 100
-    
+
     t_stat, p_value = stats.ttest_ind(niche_results, homo_results)
     effect_size = (niche_perf - homo_perf) / np.sqrt((np.std(niche_results)**2 + np.std(homo_results)**2) / 2)
-    
+
     # Method diversity analysis
     method_counts = defaultdict(int)
     for specs in all_specializations:
         for agent_id, spec in specs.items():
             method_counts[spec['primary_method']] += 1
-    
+
     print(f"\n  Results ({n_trials} trials):")
     print(f"    NichePopulation Performance: {niche_perf:.3f} ± {np.std(niche_results):.3f}")
     print(f"    Homogeneous Performance:     {homo_perf:.3f} ± {np.std(homo_results):.3f}")
@@ -409,12 +409,12 @@ def run_domain_experiment(domain: str, n_trials: int = 30) -> Dict:
     print(f"    Method Specialization (MSI): {np.mean(niche_msis):.3f} ± {np.std(niche_msis):.3f}")
     print(f"    Method Coverage:             {np.mean(niche_coverages):.1%}")
     print(f"    p-value:                     {p_value:.4f} {'***' if p_value < 0.001 else '**' if p_value < 0.01 else '*' if p_value < 0.05 else ''}")
-    
+
     print(f"\n  Method Specialization Distribution:")
     for method, count in sorted(method_counts.items(), key=lambda x: -x[1]):
         pct = count / (n_trials * CONFIG['n_agents']) * 100
         print(f"    {method}: {count} agents ({pct:.1f}%)")
-    
+
     return {
         'domain': domain,
         'n_methods': len(config['methods']),
@@ -453,21 +453,21 @@ def main():
     print(f"  Methods per domain: 5")
     print(f"  Trials: {CONFIG['n_trials']}")
     print(f"  Iterations: {CONFIG['n_iterations']}")
-    
+
     domains = ['crypto', 'commodities', 'weather', 'solar', 'traffic', 'air_quality']
     results = {}
-    
+
     for domain in domains:
         results[domain] = run_domain_experiment(domain, CONFIG['n_trials'])
-    
+
     # Summary
     print("\n" + "="*100)
     print("SUMMARY: METHOD SPECIALIZATION ACROSS ALL DOMAINS")
     print("="*100)
-    
+
     print(f"\n{'Domain':<15} {'Methods':<8} {'MSI':<12} {'Coverage':<10} {'Niche Perf':<12} {'Homo Perf':<12} {'Δ%':<10} {'p-value'}")
     print("-"*100)
-    
+
     for domain, r in results.items():
         msi = f"{r['method_specialization_index']['mean']:.3f}"
         cov = f"{r['method_coverage']:.0%}"
@@ -476,23 +476,23 @@ def main():
         delta = f"{r['improvement_pct']:+.1f}%"
         p = f"{r['p_value']:.4f}"
         sig = '***' if r['p_value'] < 0.001 else '**' if r['p_value'] < 0.01 else '*' if r['p_value'] < 0.05 else ''
-        
+
         print(f"{domain:<15} {r['n_methods']:<8} {msi:<12} {cov:<10} {niche:<12} {homo:<12} {delta:<10} {p} {sig}")
-    
+
     print("-"*100)
-    
+
     # Aggregate
     avg_msi = np.mean([r['method_specialization_index']['mean'] for r in results.values()])
     avg_coverage = np.mean([r['method_coverage'] for r in results.values()])
     avg_improvement = np.mean([r['improvement_pct'] for r in results.values()])
     all_sig = all(r['p_value'] < 0.05 for r in results.values())
-    
+
     print(f"\nAggregate Statistics:")
     print(f"  Average Method Specialization (MSI): {avg_msi:.3f}")
     print(f"  Average Method Coverage:             {avg_coverage:.0%}")
     print(f"  Average Performance Improvement:     {avg_improvement:+.1f}%")
     print(f"  All domains significant:             {'✅ YES' if all_sig else '❌ NO'}")
-    
+
     # Key findings
     print("\n" + "="*70)
     print("KEY FINDINGS")
@@ -500,27 +500,26 @@ def main():
     print(f"\n1. EMERGENT METHOD SPECIALIZATION:")
     print(f"   - Agents develop preferences for specific prediction methods")
     print(f"   - Average MSI = {avg_msi:.3f} (0=uniform, 1=fully specialized)")
-    
+
     print(f"\n2. DIVISION OF LABOR:")
     print(f"   - Population uses {avg_coverage:.0%} of available methods on average")
     print(f"   - Different agents specialize in different methods")
-    
+
     print(f"\n3. PERFORMANCE BENEFIT:")
     print(f"   - Diverse populations outperform homogeneous by {avg_improvement:+.1f}%")
     print(f"   - All {len(domains)} domains show statistically significant improvement")
-    
+
     # Save results
     output_dir = Path(__file__).parent.parent / "results" / "method_specialization"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_dir / "results.json", 'w') as f:
         json.dump(results, f, indent=2, default=str)
-    
+
     print(f"\n✅ Results saved to: {output_dir / 'results.json'}")
-    
+
     return results
 
 
 if __name__ == "__main__":
     main()
-
