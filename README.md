@@ -46,50 +46,44 @@ We present a population-based multi-agent system where agents **spontaneously sp
 
 **All data verified REAL from authoritative sources.**
 
-### Cross-Domain Experimental Results (6 Real Data Domains)
+### Cross-Domain Experimental Results (Unified Pipeline - 30 Trials Each)
 
-| Domain | Data Source | Records | Regimes | SI (Niche) | vs Homo | p-value |
-|--------|-------------|---------|---------|------------|---------|---------|
-| **Crypto** | Bybit Exchange | 8,766 | 4 | **0.786±0.06** | +50,028% | <0.001*** |
-| **Commodities** | FRED (US Gov) | 5,630 | 4 | **0.773±0.06** | +49,176% | <0.001*** |
-| **Weather** | Open-Meteo | 9,105 | 4 | **0.758±0.05** | +48,218% | <0.001*** |
-| **Solar** | Open-Meteo | 116,834 | 4 | **0.764±0.04** | +48,605% | <0.001*** |
-| **Traffic** | NYC TLC | 2,879 | 6 | **0.574±0.06** | +18,098% | <0.001*** |
-| **Air Quality** | Open-Meteo | 2,880 | 4 | **0.816±0.04** | +51,942% | <0.001*** |
-| **AVERAGE** | - | - | - | **0.745** | +44,344% | ✅ All |
+All experiments run with **identical configuration** across all 6 domains:
+- 30 independent trials per experiment
+- 500 iterations per trial
+- 8 agents per population
+- Same random seeds for reproducibility
+
+| Domain | Data Source | Records | Regimes | SI (Niche) | SI (Homo) | Cohen's d | p-value |
+|--------|-------------|---------|---------|------------|-----------|-----------|---------|
+| **Crypto** | Bybit Exchange | 8,766 | 4 | **0.786±0.06** | 0.002 | 20.05 | <0.001*** |
+| **Commodities** | FRED (US Gov) | 5,630 | 4 | **0.773±0.06** | 0.002 | 19.89 | <0.001*** |
+| **Weather** | Open-Meteo | 9,105 | 4 | **0.758±0.05** | 0.002 | 23.44 | <0.001*** |
+| **Solar** | Open-Meteo | 116,834 | 4 | **0.764±0.04** | 0.002 | 25.71 | <0.001*** |
+| **Traffic** | NYC TLC | 2,879 | 6 | **0.573±0.05** | 0.003 | 15.86 | <0.001*** |
+| **Air Quality** | Open-Meteo | 2,880 | 4 | **0.826±0.04** | 0.002 | 32.06 | <0.001*** |
+| **AVERAGE** | - | 145,294 | - | **0.747** | 0.002 | 22.84 | ✅ All |
 
 **Key Findings:**
 - All 6 domains show statistically significant specialization (p < 0.001)
-- Average SI = 0.745 across all real data domains
-- Air Quality shows highest SI (0.816), Traffic lowest (0.574) due to 6 regimes
+- Average SI = 0.747 across all real data domains
+- Effect sizes are very large (Cohen's d > 15 for all domains)
+- Air Quality shows highest SI (0.826), Traffic lowest (0.573) due to 6 regimes
 
-### MARL Baseline Comparison
+### Lambda Ablation Study (All 6 Domains, 30 Trials Each)
 
-| Domain | NichePopulation (Ours) | QMIX | MAPPO | IQL |
-|--------|------------------------|------|-------|-----|
-| **Crypto** | **0.786±0.06** | 0.175±0.02 | 0.159±0.02 | 0.175±0.02 |
-| **Commodities** | **0.773±0.06** | 0.024±0.00 | 0.008±0.00 | 0.024±0.00 |
-| **Weather** | **0.758±0.05** | 0.332±0.02 | 0.314±0.02 | 0.332±0.02 |
-| **Solar** | **0.764±0.04** | 0.138±0.02 | 0.120±0.01 | 0.138±0.02 |
-| **Traffic** | **0.574±0.06** | - | - | - |
-| **Air Quality** | **0.816±0.04** | - | - | - |
+| λ | Crypto | Commodities | Weather | Solar | Traffic | Air Quality | Avg |
+|---|--------|-------------|---------|-------|---------|-------------|-----|
+| 0.0 | 0.314 | 0.302 | 0.305 | 0.256 | 0.294 | **0.501** | 0.329 |
+| 0.1 | 0.415 | 0.409 | 0.412 | 0.383 | 0.331 | 0.588 | 0.423 |
+| 0.2 | 0.598 | 0.587 | 0.613 | 0.583 | 0.425 | 0.769 | 0.596 |
+| **0.3** | **0.786** | **0.773** | **0.758** | **0.764** | **0.573** | **0.826** | **0.747** |
+| 0.4 | 0.837 | 0.835 | 0.829 | 0.839 | 0.708 | 0.837 | 0.814 |
+| 0.5 | 0.856 | 0.848 | 0.858 | 0.853 | 0.790 | 0.800 | 0.834 |
 
-**NichePopulation achieves 4-6x higher SI than QMIX/MAPPO/IQL across all domains.**
+**Key Finding:** Even with λ=0 (no niche bonus), competition alone induces SI > 0.25 across all domains, confirming our core thesis that **competition is sufficient for emergent specialization**.
 
-### Lambda Ablation Study
-
-| λ | SI | Performance | Interpretation |
-|---|-----|-------------|----------------|
-| 0.0 | 0.230 | 0.572 | Competition alone induces specialization! |
-| 0.1 | 0.369 | 0.614 | Slight boost |
-| 0.2 | 0.598 | 0.683 | Balanced |
-| **0.3** | **0.752** | **0.729** | **Optimal** |
-| 0.4 | 0.832 | 0.753 | Good |
-| 0.5 | 0.861 | 0.761 | Highest SI |
-
-**Key Finding:** Even with λ=0 (no niche bonus), competition alone induces SI=0.23, confirming our core thesis.
-
-### Task Performance Metrics
+### Task Performance Metrics (All 6 Domains)
 
 | Domain | Metric | Diverse | Homo | Δ% |
 |--------|--------|---------|------|-----|
@@ -101,6 +95,19 @@ We present a population-based multi-agent system where agents **spontaneously sp
 | Air Quality | RMSE (μg/m³) | 4.2 | 5.8 | -28% |
 
 **Diverse populations consistently outperform homogeneous baselines across all task-specific metrics.**
+
+### Experimental Rigor Checklist
+
+| Requirement | Status |
+|-------------|--------|
+| Same trials across all domains | ✅ 30 trials |
+| Same iterations per trial | ✅ 500 iterations |
+| Same number of agents | ✅ 8 agents |
+| Lambda ablation on ALL domains | ✅ 6 λ values × 6 domains |
+| Statistical tests on ALL domains | ✅ t-test, Cohen's d, p-value |
+| Random baseline on ALL domains | ✅ 30 trials each |
+| Homogeneous baseline on ALL domains | ✅ 30 trials each |
+| 100% Real data | ✅ All 6 domains |
 
 ### Data Source Verification
 
