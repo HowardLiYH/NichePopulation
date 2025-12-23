@@ -78,15 +78,15 @@ def compute_mape(predictions: np.ndarray, actuals: np.ndarray) -> float:
     return np.mean(np.abs(predictions[mask] - actuals[mask]) / np.abs(actuals[mask])) * 100
 
 
-def simulate_domain_experiment(domain: str, n_trials: int = 30, 
+def simulate_domain_experiment(domain: str, n_trials: int = 30,
                                 n_iterations: int = 500, seed: int = 42) -> DomainMetrics:
     """
     Simulate experiment for a single domain.
-    
+
     Computes both SI and domain-specific performance metric.
     """
     rng = np.random.default_rng(seed)
-    
+
     # Domain-specific settings
     domain_config = {
         'crypto': {
@@ -132,47 +132,47 @@ def simulate_domain_experiment(domain: str, n_trials: int = 30,
             'noise_scale': 3000,
         },
     }
-    
+
     config = domain_config.get(domain, domain_config['weather'])
-    
+
     diverse_values = []
     homo_values = []
     si_values = []
-    
+
     for trial in range(n_trials):
         trial_seed = seed + trial
         trial_rng = np.random.default_rng(trial_seed)
-        
+
         # Simulate SI for this trial
         si = 0.3 + trial_rng.normal(0, 0.1)
         si = np.clip(si, 0.1, 0.9)
         si_values.append(si)
-        
+
         # Diverse performance (correlates with SI)
         si_bonus = (si - 0.25) * 0.5  # Higher SI -> better performance
         diverse_perf = config['base_diverse'] + si_bonus * config['noise_scale'] + trial_rng.normal(0, config['noise_scale'])
-        
+
         # Homo performance (baseline, no SI benefit)
         homo_perf = config['base_homo'] + trial_rng.normal(0, config['noise_scale'])
-        
+
         diverse_values.append(diverse_perf)
         homo_values.append(homo_perf)
-    
+
     diverse_values = np.array(diverse_values)
     homo_values = np.array(homo_values)
     si_values = np.array(si_values)
-    
+
     # Compute improvement
     if config['higher_is_better']:
         improvement = (np.mean(diverse_values) - np.mean(homo_values)) / abs(np.mean(homo_values)) * 100
     else:
         improvement = (np.mean(homo_values) - np.mean(diverse_values)) / abs(np.mean(homo_values)) * 100
-    
+
     # SI-Performance correlation
     corr, pvalue = stats.pearsonr(si_values, diverse_values)
     if not config['higher_is_better']:
         corr = -corr  # Flip sign for metrics where lower is better
-    
+
     return DomainMetrics(
         domain=domain,
         metric_name=config['metric_name'],
@@ -191,12 +191,12 @@ def simulate_domain_experiment(domain: str, n_trials: int = 30,
 def run_all_domains(n_trials: int = 30) -> Dict[str, DomainMetrics]:
     """Run experiments on all 6 domains."""
     domains = ['crypto', 'commodities', 'weather', 'solar', 'traffic', 'electricity']
-    
+
     results = {}
     for domain in domains:
         print(f"Running {domain}...")
         results[domain] = simulate_domain_experiment(domain, n_trials)
-    
+
     return results
 
 
@@ -212,7 +212,7 @@ def generate_performance_table(results: Dict[str, DomainMetrics]) -> str:
 \textbf{Domain} & \textbf{Metric} & \textbf{SI} & \textbf{Diverse} & \textbf{Homo} & \textbf{$\Delta$\%} & \textbf{r(SI,Perf)} \\
 \midrule
 """
-    
+
     for domain, metrics in results.items():
         latex += f"{domain.capitalize()} & {metrics.metric_name} & "
         latex += f"{metrics.mean_si:.2f} & "
@@ -220,7 +220,7 @@ def generate_performance_table(results: Dict[str, DomainMetrics]) -> str:
         latex += f"{metrics.homo_value:.2f}$\\pm${metrics.homo_std:.2f} & "
         latex += f"{metrics.improvement_pct:+.1f}\\% & "
         latex += f"{metrics.si_perf_corr:.2f} \\\\\n"
-    
+
     latex += r"""
 \bottomrule
 \end{tabular}
@@ -234,32 +234,32 @@ def main():
     print("="*60)
     print("TASK PERFORMANCE EXPERIMENT (6 DOMAINS)")
     print("="*60)
-    
+
     results = run_all_domains(n_trials=30)
-    
+
     # Summary table
     print("\n" + "="*80)
     print("RESULTS SUMMARY")
     print("="*80)
     print(f"\n{'Domain':<12} {'Metric':<12} {'SI':<6} {'Diverse':<12} {'Homo':<12} {'Δ%':<8} {'r':<6}")
     print("-"*80)
-    
+
     for domain, metrics in results.items():
         print(f"{domain:<12} {metrics.metric_name:<12} {metrics.mean_si:.2f}  "
               f"{metrics.diverse_value:.2f}±{metrics.diverse_std:.2f}  "
               f"{metrics.homo_value:.2f}±{metrics.homo_std:.2f}  "
               f"{metrics.improvement_pct:+.1f}%   "
               f"{metrics.si_perf_corr:.2f}")
-    
+
     # Average SI-Performance correlation
     avg_corr = np.mean([m.si_perf_corr for m in results.values()])
     print("-"*80)
     print(f"Average SI-Performance correlation: r = {avg_corr:.3f}")
-    
+
     # Save results
     output_dir = Path(__file__).parent.parent / "results" / "task_performance"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     results_dict = {
         domain: {
             'domain': m.domain,
@@ -276,18 +276,17 @@ def main():
         }
         for domain, m in results.items()
     }
-    
+
     with open(output_dir / "results.json", 'w') as f:
         json.dump(results_dict, f, indent=2)
-    
+
     # Generate LaTeX table
     latex_table = generate_performance_table(results)
     with open(output_dir / "table.tex", 'w') as f:
         f.write(latex_table)
-    
+
     print(f"\nResults saved to: {output_dir}")
 
 
 if __name__ == "__main__":
     main()
-

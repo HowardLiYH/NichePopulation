@@ -26,18 +26,18 @@ def run_niche_population_experiment(regimes: List[str], methods: List[str],
     """Run NichePopulation experiment on a domain."""
     rng = np.random.default_rng(seed)
     n_agents = 8
-    
+
     # Initialize niche affinities
     niche_affinities = {
         f"agent_{i}": {r: 1.0/len(regimes) for r in regimes}
         for i in range(n_agents)
     }
-    
+
     regime_wins = {f"agent_{i}": defaultdict(int) for i in range(n_agents)}
-    
+
     for iteration in range(n_iterations):
         regime = rng.choice(list(regime_probs.keys()), p=list(regime_probs.values()))
-        
+
         # Competition
         agent_scores = {}
         for i in range(n_agents):
@@ -45,10 +45,10 @@ def run_niche_population_experiment(regimes: List[str], methods: List[str],
             base_score = rng.normal(0.5, 0.15)
             niche_strength = niche_affinities[agent_id][regime]
             agent_scores[agent_id] = base_score + niche_bonus * (niche_strength - 0.25)
-        
+
         winner_id = max(agent_scores, key=agent_scores.get)
         regime_wins[winner_id][regime] += 1
-        
+
         # Update winner's niche affinity
         lr = 0.1
         for r in regimes:
@@ -56,11 +56,11 @@ def run_niche_population_experiment(regimes: List[str], methods: List[str],
                 niche_affinities[winner_id][r] = min(1.0, niche_affinities[winner_id][r] + lr)
             else:
                 niche_affinities[winner_id][r] = max(0.01, niche_affinities[winner_id][r] - lr / (len(regimes) - 1))
-        
+
         # Normalize
         total = sum(niche_affinities[winner_id].values())
         niche_affinities[winner_id] = {r: v/total for r, v in niche_affinities[winner_id].items()}
-    
+
     # Compute SI
     agent_sis = []
     for i in range(n_agents):
@@ -70,7 +70,7 @@ def run_niche_population_experiment(regimes: List[str], methods: List[str],
         entropy = -np.sum(affinities * np.log(affinities + 1e-10))
         si = 1 - entropy / np.log(len(regimes))
         agent_sis.append(si)
-    
+
     return {
         'mean_si': float(np.mean(agent_sis)),
         'std_si': float(np.std(agent_sis)),
@@ -84,14 +84,14 @@ def run_domain_experiment(domain_name: str, n_trials: int = 30) -> Dict:
     print(f"\n{'='*60}")
     print(f"DOMAIN: {domain_name.upper()}")
     print(f"{'='*60}")
-    
+
     # Domain settings
     domain_settings = {
         'traffic': {
             'regimes': ['morning_rush', 'evening_rush', 'midday', 'night', 'weekend'],
-            'probs': {'morning_rush': 0.089, 'evening_rush': 0.089, 
+            'probs': {'morning_rush': 0.089, 'evening_rush': 0.089,
                      'midday': 0.356, 'night': 0.178, 'weekend': 0.288},
-            'methods': ['persistence', 'hourly_average', 'weekly_pattern', 
+            'methods': ['persistence', 'hourly_average', 'weekly_pattern',
                        'rush_hour_model', 'exponential_smoothing'],
         },
         'electricity': {
@@ -102,15 +102,15 @@ def run_domain_experiment(domain_name: str, n_trials: int = 30) -> Dict:
                        'peak_model', 'load_forecast'],
         },
     }
-    
+
     settings = domain_settings.get(domain_name, domain_settings['traffic'])
     regimes = settings['regimes']
     regime_probs = settings['probs']
     methods = settings['methods']
-    
+
     print(f"Regimes: {len(regimes)}")
     print(f"Methods: {len(methods)}")
-    
+
     # NichePopulation trials
     niche_results = []
     for trial in range(n_trials):
@@ -118,7 +118,7 @@ def run_domain_experiment(domain_name: str, n_trials: int = 30) -> Dict:
             regimes, methods, regime_probs, seed=42 + trial
         )
         niche_results.append(result['mean_si'])
-    
+
     # Baseline: Random
     random_sis = []
     for trial in range(n_trials):
@@ -126,22 +126,22 @@ def run_domain_experiment(domain_name: str, n_trials: int = 30) -> Dict:
         # Random SI is approximately entropy of uniform
         random_si = 0.2 + rng.normal(0, 0.05)
         random_sis.append(random_si)
-    
+
     # Compute statistics
     niche_mean = np.mean(niche_results)
     niche_std = np.std(niche_results)
     random_mean = np.mean(random_sis)
     random_std = np.std(random_sis)
-    
+
     # Statistical test
     t_stat, p_value = stats.ttest_ind(niche_results, random_sis)
-    
+
     print(f"\nResults ({n_trials} trials):")
     print(f"  NichePopulation: SI = {niche_mean:.3f} ± {niche_std:.3f}")
     print(f"  Random Baseline: SI = {random_mean:.3f} ± {random_std:.3f}")
     print(f"  Improvement: {(niche_mean - random_mean) / random_mean * 100:+.1f}%")
     print(f"  t-test: t = {t_stat:.2f}, p = {p_value:.4f}")
-    
+
     return {
         'domain': domain_name,
         'n_regimes': len(regimes),
@@ -161,34 +161,33 @@ def main():
     print("="*60)
     print("NEW DOMAIN EXPERIMENTS: TRAFFIC & ELECTRICITY")
     print("="*60)
-    
+
     results = {}
-    
+
     for domain in ['traffic', 'electricity']:
         results[domain] = run_domain_experiment(domain, n_trials=30)
-    
+
     # Summary
     print("\n" + "="*60)
     print("SUMMARY")
     print("="*60)
     print(f"\n{'Domain':<12} {'SI (NichePop)':<15} {'SI (Random)':<15} {'Δ%':<10} {'p-value'}")
     print("-"*60)
-    
+
     for domain, r in results.items():
         print(f"{domain:<12} {r['niche_mean']:.3f}±{r['niche_std']:.3f}     "
               f"{r['random_mean']:.3f}±{r['random_std']:.3f}     "
               f"{r['improvement_pct']:+.1f}%     {r['p_value']:.4f}")
-    
+
     # Save results
     output_dir = Path(__file__).parent.parent / "results" / "new_domains"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_dir / "results.json", 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     print(f"\nResults saved to: {output_dir}")
 
 
 if __name__ == "__main__":
     main()
-
