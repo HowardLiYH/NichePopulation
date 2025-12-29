@@ -2349,31 +2349,48 @@ One might argue: ``MARL agents are homogeneous but still perform well.''
     \item A diverse population has specialists ready for each regime
 \end{itemize}
 
-\begin{example}[Rare Regime Resilience --- Empirical Validation]
-We tested performance during rare regimes across all 6 domains (30 trials each):
+\begin{example}[Rare Regime Resilience --- Empirical Validation with All MARL Methods]
+We tested rare regime performance across 6 domains (30 trials each), comparing NichePopulation against Homogeneous and \textbf{all four MARL methods}: IQL, VDN, QMIX, and MAPPO.
 
+\textbf{Raw Performance in Rare Regimes:}
 \begin{center}
-\begin{tabular}{lccccc}
+\begin{tabular}{lccccccc}
 \toprule
-Domain & Rare Regime & Freq. & Homogeneous & NichePopulation & \textbf{Improvement} \\
+Domain & Rare Regime & Niche & Homo & IQL & VDN & QMIX & MAPPO \\
 \midrule
-Weather & Extreme & 10\% & 0.543 & 0.982 & \textbf{+80.8\%} \\
-Commodities & Volatile & 15\% & 0.643 & 0.819 & \textbf{+27.3\%} \\
-Traffic & Morning Rush & 9\% & 0.943 & 1.073 & \textbf{+13.8\%} \\
-Crypto & Volatile & 15\% & 0.743 & 0.824 & \textbf{+10.9\%} \\
-\midrule
-\textbf{Average} & --- & --- & --- & --- & \textbf{+21.2\%} \\
+Weather & Extreme (10\%) & \textbf{0.982} & 0.541 & 0.670 & 0.656 & 0.664 & 0.654 \\
+Commodities & Volatile (15\%) & \textbf{0.818} & 0.641 & 0.698 & 0.681 & 0.676 & 0.670 \\
+Traffic & Morning (9\%) & \textbf{1.074} & 0.941 & 0.925 & 0.925 & 0.934 & 0.931 \\
+Crypto & Volatile (15\%) & \textbf{0.823} & 0.741 & 0.732 & 0.733 & 0.736 & 0.737 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\textbf{Key finding}: During rare/extreme regimes (e.g., extreme weather, market volatility):
+\textbf{NichePopulation Improvement vs Each Baseline:}
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+Domain & vs Homo & vs IQL & vs VDN & vs QMIX & vs MAPPO \\
+\midrule
+Weather & \textbf{+81.5\%} & +46.7\% & +49.7\% & +48.0\% & +50.2\% \\
+Commodities & \textbf{+27.6\%} & +17.3\% & +20.1\% & +21.0\% & +22.1\% \\
+Traffic & +14.1\% & \textbf{+16.1\%} & +16.1\% & +14.9\% & +15.3\% \\
+Crypto & +11.1\% & \textbf{+12.4\%} & +12.3\% & +11.9\% & +11.8\% \\
+\midrule
+\textbf{Average} & \textbf{+21.5\%} & +15.6\% & +16.1\% & +15.6\% & +16.0\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Key findings}:
 \begin{itemize}
-    \item Homogeneous populations lack specialists $\rightarrow$ Performance degrades significantly
-    \item NichePopulation develops rare-regime specialists (73\% of trials) $\rightarrow$ \textbf{Outperforms by +21.2\% on average}
-    \item Best case (Weather/Extreme): \textbf{+80.8\% improvement}
+    \item \textbf{NichePopulation outperforms ALL baselines} in rare regimes (4/6 domains significant, $p < 0.05$)
+    \item vs Homogeneous: \textbf{+21.5\%} average (identical agents lack rare-regime expertise)
+    \item vs IQL: +15.6\%, vs VDN: +16.1\%, vs QMIX: +15.6\%, vs MAPPO: +16.0\%
+    \item \textbf{MARL methods produce near-homogeneous populations} (SI $\approx$ 0.12--0.20) $\rightarrow$ poor rare-regime coverage
+    \item NichePopulation develops rare-regime specialists in 73\% of trials
+    \item Best case (Weather/Extreme): \textbf{+81.5\%} vs Homo, \textbf{+50.2\%} vs MAPPO
 \end{itemize}
-All comparisons statistically significant ($p < 0.001$).
 \end{example}
 
 \section{Hyperparameter Sensitivity Analysis}
