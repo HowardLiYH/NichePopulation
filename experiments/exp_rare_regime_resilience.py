@@ -131,7 +131,7 @@ def train_niche_population(
     methods = config['methods']
     regime_probs = config['regime_probs']
     affinity_matrix = config['affinity_matrix']
-    
+
     # Initialize agents
     agents = {}
     for i in range(n_agents):
@@ -139,16 +139,16 @@ def train_niche_population(
             'affinity': {r: 1.0 / len(regimes) for r in regimes},
             'beliefs': {r: {m: {'alpha': 1, 'beta': 1} for m in methods} for r in regimes},
         }
-    
+
     # Normalize regime probs
     total_prob = sum(regime_probs.values())
     regime_probs_norm = {r: p / total_prob for r, p in regime_probs.items()}
-    
+
     # Training loop
     for iteration in range(n_iterations):
         # Sample regime
         regime = rng.choice(list(regime_probs_norm.keys()), p=list(regime_probs_norm.values()))
-        
+
         # Each agent selects method and gets reward
         agent_scores = {}
         agent_methods = {}
@@ -159,31 +159,31 @@ def train_niche_population(
                 alpha = agent['beliefs'][regime][m]['alpha']
                 beta = agent['beliefs'][regime][m]['beta']
                 samples[m] = rng.beta(alpha, beta)
-            
+
             selected_method = max(samples, key=samples.get)
             agent_methods[agent_id] = selected_method
-            
+
             # Get reward
             base_reward = affinity_matrix[regime][selected_method]
             noise = rng.normal(0, 0.15)
             reward = base_reward + noise
-            
+
             # Add niche bonus
             niche_bonus = lambda_val * (agent['affinity'][regime] - 1.0 / len(regimes))
             score = reward + niche_bonus
             agent_scores[agent_id] = score
-        
+
         # Winner take all
         winner_id = max(agent_scores, key=agent_scores.get)
         winner = agents[winner_id]
-        
+
         # Update winner's beliefs
         winner_method = agent_methods[winner_id]
         if agent_scores[winner_id] > 0.5:  # Success threshold
             winner['beliefs'][regime][winner_method]['alpha'] += 1
         else:
             winner['beliefs'][regime][winner_method]['beta'] += 1
-        
+
         # Update winner's affinity
         lr = 0.1
         for r in regimes:
@@ -191,11 +191,11 @@ def train_niche_population(
                 winner['affinity'][r] = winner['affinity'][r] + lr * (1 - winner['affinity'][r])
             else:
                 winner['affinity'][r] = max(0.01, winner['affinity'][r] - lr / (len(regimes) - 1))
-        
+
         # Normalize affinity
         total = sum(winner['affinity'].values())
         winner['affinity'] = {r: v / total for r, v in winner['affinity'].items()}
-    
+
     return agents
 
 
@@ -210,15 +210,15 @@ def train_homogeneous(
     methods = config['methods']
     regime_probs = config['regime_probs']
     affinity_matrix = config['affinity_matrix']
-    
+
     # Find best overall method (weighted by regime probability)
     method_scores = {m: 0 for m in methods}
     for r, prob in regime_probs.items():
         for m in methods:
             method_scores[m] += prob * affinity_matrix[r][m]
-    
+
     best_method = max(method_scores, key=method_scores.get)
-    
+
     # All agents use the same method and have uniform affinity
     agents = {}
     for i in range(n_agents):
@@ -226,7 +226,7 @@ def train_homogeneous(
             'affinity': {r: 1.0 / len(regimes) for r in regimes},
             'fixed_method': best_method,
         }
-    
+
     return agents
 
 
@@ -239,7 +239,7 @@ def evaluate_in_regime(
 ) -> float:
     """Evaluate population performance in a specific regime."""
     rewards = []
-    
+
     for agent_id, agent in agents.items():
         if is_niche:
             # NichePopulation: Agent uses Thompson sampling
@@ -255,11 +255,11 @@ def evaluate_in_regime(
         else:
             # Homogeneous: Fixed method
             method = agent['fixed_method']
-        
+
         base_reward = affinity_matrix[regime][method]
         noise = rng.normal(0, 0.1)
         rewards.append(base_reward + noise)
-    
+
     # Return best agent's performance (specialist should win)
     return max(rewards)
 
@@ -273,25 +273,25 @@ def run_resilience_experiment(
     rare_threshold: float = 0.20,
 ) -> ResilienceResult:
     """Run the rare regime resilience experiment for a domain."""
-    
+
     config = DOMAIN_CONFIGS[domain]
     regimes = config['regimes']
     regime_probs = config['regime_probs']
     affinity_matrix = config['affinity_matrix']
-    
+
     # Identify rare and common regimes
     rare_regimes = [r for r, p in regime_probs.items() if p < rare_threshold]
     common_regimes = [r for r, p in regime_probs.items() if p >= rare_threshold]
-    
+
     # If no rare regimes, use the least common
     if not rare_regimes:
         min_prob = min(regime_probs.values())
         rare_regimes = [r for r, p in regime_probs.items() if p == min_prob]
         common_regimes = [r for r in regimes if r not in rare_regimes]
-    
+
     rare_regime = rare_regimes[0]
     rare_freq = regime_probs[rare_regime]
-    
+
     # Run trials
     niche_rare_perfs = []
     homo_rare_perfs = []
@@ -299,15 +299,15 @@ def run_resilience_experiment(
     homo_common_perfs = []
     has_specialist = []
     specialist_sis = []
-    
+
     for trial in range(n_trials):
         seed = 42 + trial
         rng = np.random.default_rng(seed)
-        
+
         # Train populations
         niche_agents = train_niche_population(config, n_agents, n_iterations, lambda_val, seed)
         homo_agents = train_homogeneous(config, n_agents, seed)
-        
+
         # Check if any agent specialized in rare regime
         rare_specialist_found = False
         specialist_si = 0
@@ -316,20 +316,20 @@ def run_resilience_experiment(
             if primary in rare_regimes:
                 rare_specialist_found = True
                 specialist_si = max(specialist_si, compute_si(agent['affinity']))
-        
+
         has_specialist.append(rare_specialist_found)
         specialist_sis.append(specialist_si)
-        
+
         # Evaluate in rare regime (50 samples)
         rare_niche = []
         rare_homo = []
         for _ in range(50):
             rare_niche.append(evaluate_in_regime(niche_agents, rare_regime, affinity_matrix, rng, is_niche=True))
             rare_homo.append(evaluate_in_regime(homo_agents, rare_regime, affinity_matrix, rng, is_niche=False))
-        
+
         niche_rare_perfs.append(np.mean(rare_niche))
         homo_rare_perfs.append(np.mean(rare_homo))
-        
+
         # Evaluate in common regimes (50 samples)
         common_niche = []
         common_homo = []
@@ -337,19 +337,19 @@ def run_resilience_experiment(
             common_regime = rng.choice(common_regimes)
             common_niche.append(evaluate_in_regime(niche_agents, common_regime, affinity_matrix, rng, is_niche=True))
             common_homo.append(evaluate_in_regime(homo_agents, common_regime, affinity_matrix, rng, is_niche=False))
-        
+
         niche_common_perfs.append(np.mean(common_niche))
         homo_common_perfs.append(np.mean(common_homo))
-    
+
     # Compute statistics
     niche_rare_mean = np.mean(niche_rare_perfs)
     niche_rare_std = np.std(niche_rare_perfs)
     homo_rare_mean = np.mean(homo_rare_perfs)
     homo_rare_std = np.std(homo_rare_perfs)
-    
+
     rare_improvement = (niche_rare_mean - homo_rare_mean) / homo_rare_mean * 100
     common_improvement = (np.mean(niche_common_perfs) - np.mean(homo_common_perfs)) / np.mean(homo_common_perfs) * 100
-    
+
     # T-test for rare regime performance (manual implementation)
     n1, n2 = len(niche_rare_perfs), len(homo_rare_perfs)
     var1, var2 = np.var(niche_rare_perfs, ddof=1), np.var(homo_rare_perfs, ddof=1)
@@ -358,7 +358,7 @@ def run_resilience_experiment(
     # Approximate p-value using normal distribution for large n
     from math import erfc, sqrt
     p_value = erfc(abs(t_stat) / sqrt(2))
-    
+
     return ResilienceResult(
         domain=domain,
         rare_regime=rare_regime,
@@ -385,15 +385,15 @@ def main():
     print("Testing Example 21.1: Diverse populations handle rare regimes better")
     print("=" * 70)
     print()
-    
+
     results = []
-    
+
     for domain in DOMAIN_CONFIGS.keys():
         print(f"Running {domain}...", end=" ", flush=True)
         result = run_resilience_experiment(domain)
         results.append(result)
         print(f"Done. Rare regime improvement: +{result.rare_improvement_pct:.1f}%")
-    
+
     # Print results table
     print("\n" + "=" * 70)
     print("RESULTS SUMMARY")
@@ -401,28 +401,28 @@ def main():
     print()
     print(f"{'Domain':<15} {'Rare Regime':<20} {'Freq':>6} {'Niche':>8} {'Homo':>8} {'Improve':>10} {'p-value':>10} {'Specialist?'}")
     print("-" * 95)
-    
+
     for r in results:
         sig = "***" if r.p_value < 0.001 else "**" if r.p_value < 0.01 else "*" if r.p_value < 0.05 else ""
         specialist = f"{r.has_specialist_rate:.0%}" if r.has_specialist_rate > 0 else "No"
         print(f"{r.domain:<15} {r.rare_regime:<20} {r.rare_regime_freq:>5.0%} {r.niche_rare_perf:>8.3f} {r.homo_rare_perf:>8.3f} {r.rare_improvement_pct:>+9.1f}% {r.p_value:>9.2e}{sig} {specialist:>10}")
-    
+
     print("-" * 95)
-    
+
     # Compute averages
     avg_improvement = np.mean([r.rare_improvement_pct for r in results])
     avg_specialist_rate = np.mean([r.has_specialist_rate for r in results])
     all_significant = all(r.p_value < 0.05 for r in results)
-    
+
     print(f"\nAverage rare regime improvement: +{avg_improvement:.1f}%")
     print(f"Average specialist development rate: {avg_specialist_rate:.0%}")
     print(f"All domains statistically significant (p < 0.05): {all_significant}")
-    
+
     # Key finding for Example 21.1
     print("\n" + "=" * 70)
     print("KEY FINDING FOR EXAMPLE 21.1")
     print("=" * 70)
-    
+
     # Find the most extreme example
     best_result = max(results, key=lambda r: r.rare_improvement_pct)
     print(f"\nBest case: {best_result.domain.upper()}")
@@ -431,14 +431,14 @@ def main():
     print(f"  Homogeneous performance: {best_result.homo_rare_perf:.3f}")
     print(f"  Improvement: +{best_result.rare_improvement_pct:.1f}%")
     print(f"  Specialist developed: {best_result.has_specialist_rate:.0%} of trials")
-    
+
     print(f"\nCONCLUSION: Example 21.1 is VALIDATED.")
     print("Diverse populations significantly outperform homogeneous ones during rare regimes.")
-    
+
     # Save results
     output_dir = Path("results/rare_regime_resilience")
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     results_dict = {
         'results': [
             {
@@ -464,13 +464,12 @@ def main():
             'all_significant': all_significant,
         }
     }
-    
+
     with open(output_dir / "results.json", "w") as f:
         json.dump(results_dict, f, indent=2)
-    
+
     print(f"\nResults saved to {output_dir / 'results.json'}")
 
 
 if __name__ == "__main__":
     main()
-
