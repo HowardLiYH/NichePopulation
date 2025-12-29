@@ -1965,17 +1965,18 @@ Agent A is now more specialized toward Bull (SI increased from 0.078 to 0.156).
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[
-    node distance=2.5cm,
-    box/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=1cm, align=center},
-    arrow/.style={->, thick}
+    box/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=0.9cm, align=center, font=\small},
+    arrow/.style={->, thick, >=stealth}
 ]
 
-\node[box] (special) {Agent specializes\\in regime $r$};
-\node[box, right=of special] (affinity) {Higher $\alpha_r$};
-\node[box, below=of affinity] (bonus) {Higher niche bonus\\when $r$ appears};
-\node[box, left=of bonus] (win) {More likely\\to win in $r$};
-\node[box, below=of special] (update) {Only winner\\updates affinity};
+% Arrange 4 nodes in a rectangle with clear spacing
+\node[box] (special) at (0, 2) {Agent specializes\\in regime $r$};
+\node[box] (affinity) at (5, 2) {Higher affinity $\alpha_r$};
+\node[box] (bonus) at (5, 0) {Higher niche bonus\\when $r$ appears};
+\node[box] (win) at (5, -2) {More likely to win\\in regime $r$};
+\node[box] (update) at (0, -2) {Only winner\\updates affinity};
 
+% Arrows forming the loop (clockwise)
 \draw[arrow] (special) -- (affinity);
 \draw[arrow] (affinity) -- (bonus);
 \draw[arrow] (bonus) -- (win);
@@ -1983,7 +1984,7 @@ Agent A is now more specialized toward Bull (SI increased from 0.078 to 0.156).
 \draw[arrow] (update) -- (special);
 
 \end{tikzpicture}
-\caption{The positive feedback loop driving specialization. Success in a regime increases affinity, which increases future success probability.}
+\caption{The positive feedback loop driving specialization. Winning in a regime increases affinity, which increases future win probability in that regime.}
 \end{figure}
 
 \section{Why Competition Alone Induces Specialization ($\lambda = 0$)}
