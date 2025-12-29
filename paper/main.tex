@@ -20,6 +20,9 @@
 \usepackage{multirow}
 \usepackage{subcaption}
 \usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage{colortbl} % For \rowcolor in tables
 
 % Theorem environments
 \newtheorem{proposition}{Proposition}
@@ -694,5 +697,8 @@ All experiments were conducted on a single machine with:
 \end{itemize}
 
 Total experiment runtime: approximately 4 hours for all conditions across all domains.
+
+% Include the detailed algorithm workflow appendix
+\input{appendix_workflow}
 
 \end{document}
