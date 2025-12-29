@@ -1,0 +1,99 @@
+{
+  "results": [
+    {
+      "domain": "crypto",
+      "rare_regime": "volatile",
+      "rare_regime_freq": 0.15,
+      "niche_rare_perf": 0.8238862334613313,
+      "niche_rare_std": 0.01522186354394109,
+      "homo_rare_perf": 0.7431849408461617,
+      "homo_rare_std": 0.00837834904751841,
+      "rare_improvement_pct": 10.858843900050799,
+      "common_improvement_pct": 28.072102369114415,
+      "has_specialist_rate": 0.9,
+      "specialist_si_mean": 0.6296208798975809,
+      "t_stat": 25.011894048909525,
+      "p_value": 4.5384516575504614e-138
+    },
+    {
+      "domain": "weather",
+      "rare_regime": "extreme",
+      "rare_regime_freq": 0.1,
+      "niche_rare_perf": 0.9822001597563119,
+      "niche_rare_std": 0.013435471920333697,
+      "homo_rare_perf": 0.5431849408461619,
+      "homo_rare_std": 0.008378349047518401,
+      "rare_improvement_pct": 80.82242085472059,
+      "common_improvement_pct": 6.146285646844591,
+      "has_specialist_rate": 0.4,
+      "specialist_si_mean": 0.265107388243999,
+      "t_stat": 149.31172426072624,
+      "p_value": 0.0
+    },
+    {
+      "domain": "traffic",
+      "rare_regime": "morning_rush",
+      "rare_regime_freq": 0.09,
+      "niche_rare_perf": 1.0733931269034387,
+      "niche_rare_std": 0.013136902173482823,
+      "homo_rare_perf": 0.9431849408461622,
+      "homo_rare_std": 0.008378349047518427,
+      "rare_improvement_pct": 13.805159562923302,
+      "common_improvement_pct": 3.722949291752463,
+      "has_specialist_rate": 1.0,
+      "specialist_si_mean": 0.6401308202644466,
+      "t_stat": 45.0023665350822,
+      "p_value": 0.0
+    },
+    {
+      "domain": "air_quality",
+      "rare_regime": "unhealthy_sensitive",
+      "rare_regime_freq": 0.04,
+      "niche_rare_perf": 1.0131895839358414,
+      "niche_rare_std": 0.017847276806750002,
+      "homo_rare_perf": 1.0431849408461618,
+      "homo_rare_std": 0.008378349047518439,
+      "rare_improvement_pct": -2.8753632971340806,
+      "common_improvement_pct": 1.2745227178633172,
+      "has_specialist_rate": 0.13333333333333333,
+      "specialist_si_mean": 0.051600730771551584,
+      "t_stat": -8.192820660733751,
+      "p_value": 2.551742520144881e-16
+    },
+    {
+      "domain": "solar",
+      "rare_regime": "low",
+      "rare_regime_freq": 0.2,
+      "niche_rare_perf": 0.9157739062138256,
+      "niche_rare_std": 0.0136285173368835,
+      "homo_rare_perf": 0.9431849408461622,
+      "homo_rare_std": 0.008378349047518427,
+      "rare_improvement_pct": -2.906220556039125,
+      "common_improvement_pct": 9.180369012557428,
+      "has_specialist_rate": 1.0,
+      "specialist_si_mean": 0.8277505504108135,
+      "t_stat": -9.227011977462636,
+      "p_value": 2.7828650433335987e-20
+    },
+    {
+      "domain": "commodities",
+      "rare_regime": "volatile",
+      "rare_regime_freq": 0.15,
+      "niche_rare_perf": 0.8188971389685044,
+      "niche_rare_std": 0.010241290226946625,
+      "homo_rare_perf": 0.6431849408461621,
+      "homo_rare_std": 0.00837834904751842,
+      "rare_improvement_pct": 27.31907838065652,
+      "common_improvement_pct": 20.41355564831542,
+      "has_specialist_rate": 0.9666666666666667,
+      "specialist_si_mean": 0.702696990824478,
+      "t_stat": 71.51245435146879,
+      "p_value": 0.0
+    }
+  ],
+  "summary": {
+    "avg_rare_improvement": 21.170653140863,
+    "avg_specialist_rate": 0.7333333333333333,
+    "all_significant": true
+  }
+}
