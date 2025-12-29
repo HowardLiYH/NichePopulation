@@ -38,33 +38,33 @@ This section provides an exhaustive walkthrough of the NichePopulation algorithm
     % === PHASE 0: INITIALIZATION ===
     \node (beta) [init] {Init $\beta_{i,r,m}^+ = \beta_{i,r,m}^- = 1$\\(20 Beta distributions)};
     \node (alpha) [init, right=1.5cm of beta] {Init $\alpha_{i,r} = 1/R$\\$[0.25, 0.25, 0.25, 0.25]$};
-    
+
     % === PHASE 1: CONTEXT ===
     \node (regime) [process, below=1.8cm of $(beta)!0.5!(alpha)$] {Sample regime $r_t \sim \pi(r)$\\Example: $r_t = \text{Bull}$};
     \node (filter) [process, below=0.8cm of regime] {Filter beliefs for $r_t$\\(5 Beta dists for Bull)};
-    
+
     % === PHASE 2: SELECTION ===
     \node (thompson) [compute, below=1.2cm of filter] {Thompson Sampling:\\$\tilde{\theta}_m \sim \text{Beta}(\beta^+_{r_t,m}, \beta^-_{r_t,m})$};
     \node (select) [compute, below=0.8cm of thompson] {Select method:\\$m_i = \arg\max_m \tilde{\theta}_m$};
-    
+
     % === PHASE 3: EXECUTION ===
     \node (execute) [process, below=1.2cm of select] {Execute method $m_i$\\in environment};
     \node (reward) [process, below=0.8cm of execute] {Raw reward:\\$R_i = A(r_t, m_i) + \epsilon$};
-    
+
     % === PHASE 4: COMPETITION ===
     \node (bonus) [compute, below=1.2cm of reward] {Niche bonus:\\$B_i = \lambda(\alpha_{i,r_t} - 1/R)$};
     \node (score) [compute, below=0.8cm of bonus] {Final score:\\$S_i = R_i + B_i$};
     \node (compare) [decision, below=1.0cm of score] {$S_i > S_j$ $\forall j$?};
-    
+
     % === PHASE 5: UPDATES ===
     \node (losernode) [loser, right=2.5cm of compare] {LOSER\\(No update)};
     \node (skillup) [winner, below left=1.5cm and 0cm of compare] {Skill update:\\$\beta^+_{r_t,m_i} \mathrel{+}= 1$};
     \node (affup) [winner, below right=1.5cm and 0cm of compare] {Affinity update:\\$\alpha_{r_t} \mathrel{+}= \eta(1-\alpha_{r_t})$};
     \node (normalize) [winner, below=0.8cm of $(skillup)!0.5!(affup)$] {Normalize: $\alpha \leftarrow \alpha / \|\alpha\|_1$};
-    
+
     % === LOOP BACK ===
     \node (nextiter) [process, below=0.8cm of normalize] {Next iteration $t \leftarrow t+1$};
-    
+
     % === ARROWS ===
     \draw [arrow] (beta) -- (regime);
     \draw [arrow] (alpha) -- (regime);
@@ -82,10 +82,10 @@ This section provides an exhaustive walkthrough of the NichePopulation algorithm
     \draw [arrow] (skillup) -- (normalize);
     \draw [arrow] (affup) -- (normalize);
     \draw [arrow] (normalize) -- (nextiter);
-    
+
     % Loop back arrow
     \draw [arrow, rounded corners] (nextiter.west) -- +(-3.5,0) |- (regime.west);
-    
+
     % Phase labels
     \node [above=0.3cm of beta, font=\footnotesize\bfseries, blue!70] {PHASE 0: INIT};
     \node [left=0.1cm of regime, font=\footnotesize\bfseries, rotate=90, anchor=south] {PHASE 1};
@@ -93,7 +93,7 @@ This section provides an exhaustive walkthrough of the NichePopulation algorithm
     \node [left=0.1cm of execute, font=\footnotesize\bfseries, rotate=90, anchor=south] {PHASE 3};
     \node [left=0.1cm of bonus, font=\footnotesize\bfseries, rotate=90, anchor=south] {PHASE 4};
     \node [left=0.1cm of skillup, font=\footnotesize\bfseries, rotate=90, anchor=south, green!50!black] {PHASE 5};
-    
+
     \end{tikzpicture}
     }
     \caption{Complete NichePopulation algorithm flowchart. Blue nodes = initialization, Purple nodes = computation, Green nodes = winner-only updates, Red node = loser path (frozen state). The loop repeats for $T=500$ iterations.}
@@ -281,25 +281,25 @@ The key phenomenon: \textbf{random early wins create path dependence}. Different
 \toprule
 & \textbf{Iter} & $\alpha_{\text{Bull}}$ & $\alpha_{\text{Bear}}$ & $\alpha_{\text{Side}}$ & $\alpha_{\text{Vol}}$ & \textbf{SI} \\
 \midrule
-\multirow{4}{*}{\textbf{Agent 0}} 
+\multirow{4}{*}{\textbf{Agent 0}}
 & 0 & 0.25 & 0.25 & 0.25 & 0.25 & 0.00 \\
 & 50 & 0.18 & 0.22 & \textbf{0.38} & 0.22 & 0.08 \\
 & 200 & 0.12 & 0.15 & \textbf{0.58} & 0.15 & 0.31 \\
 & 500 & 0.08 & 0.09 & \textbf{0.75} & 0.08 & 0.58 \\
 \midrule
-\multirow{4}{*}{\textbf{Agent 1}} 
+\multirow{4}{*}{\textbf{Agent 1}}
 & 0 & 0.25 & 0.25 & 0.25 & 0.25 & 0.00 \\
 & 50 & \textbf{0.42} & 0.19 & 0.20 & 0.19 & 0.12 \\
 & 200 & \textbf{0.65} & 0.12 & 0.12 & 0.11 & 0.42 \\
 & 500 & \textbf{0.82} & 0.06 & 0.06 & 0.06 & 0.71 \\
 \midrule
-\multirow{4}{*}{\textbf{Agent 2}} 
+\multirow{4}{*}{\textbf{Agent 2}}
 & 0 & 0.25 & 0.25 & 0.25 & 0.25 & 0.00 \\
 & 50 & 0.20 & \textbf{0.35} & 0.23 & 0.22 & 0.06 \\
 & 200 & 0.11 & \textbf{0.55} & 0.18 & 0.16 & 0.28 \\
 & 500 & 0.05 & \textbf{0.78} & 0.10 & 0.07 & 0.62 \\
 \midrule
-\multirow{4}{*}{\textbf{Agent 3}} 
+\multirow{4}{*}{\textbf{Agent 3}}
 & 0 & 0.25 & 0.25 & 0.25 & 0.25 & 0.00 \\
 & 50 & 0.21 & 0.20 & 0.22 & \textbf{0.37} & 0.07 \\
 & 200 & 0.14 & 0.13 & 0.15 & \textbf{0.58} & 0.30 \\
@@ -467,4 +467,3 @@ With 8 agents having SI values $(0.71, 0.62, 0.58, 0.60, 0.55, 0.68, 0.64, 0.59)
     \item \textbf{Ecologically inspired}: The mechanism mirrors competitive exclusion in natural ecosystems.
     \item \textbf{Robust and general}: Works across 6 diverse real-world domains with consistent effect sizes.
 \end{enumerate}
-
