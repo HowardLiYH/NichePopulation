@@ -2052,12 +2052,32 @@ This method differentiation gives them a \textit{skill advantage} in their niche
 
 \subsubsection{Step 4: Crowding Pressure Sustains Specialization}
 
-From Proposition \ref{prop:competitive-exclusion}, crowded niches have lower expected payoffs:
-\begin{equation}
-\E[\text{Payoff}] = \frac{V_r}{k_r}
-\end{equation}
+Even with $\lambda = 0$, crowded niches create lower \textit{expected} payoffs through winner-take-all dynamics:
 
-Even with $\lambda = 0$, if two agents specialize in the same regime, they compete directly and split rewards. Deviation to an empty niche is still profitable.
+\begin{itemize}
+    \item When multiple agents target the same regime, they develop similar strategies
+    \item Similar strategies $\rightarrow$ similar scores $\rightarrow$ winner determined by noise
+    \item Each agent's probability of winning decreases: $P(\text{win}) \approx 1/k$ where $k$ = number of competitors
+    \item Expected payoff: $\E[\text{Payoff}] = P(\text{win}) \times V = V/k$
+\end{itemize}
+
+\textbf{Key insight}: We never \textit{divide} rewards---there is always exactly one winner. But the \textit{probability} of being that winner decreases with more competition. Deviation to an empty niche increases your expected wins.
+
+\begin{example}[Crowding Effect]
+Suppose 4 agents all specialize in Bull regime (similar $\alpha_{\text{Bull}} \approx 0.6$):
+\begin{itemize}
+    \item When Bull appears: All 4 have similar scores, each wins $\approx 25\%$ of the time
+    \item When Sideways appears: All 4 perform poorly, some other agent wins
+\end{itemize}
+
+Now suppose Agent D deviates to Sideways:
+\begin{itemize}
+    \item When Bull appears: 3 agents compete, each wins $\approx 33\%$
+    \item When Sideways appears: Agent D dominates, wins $\approx 90\%$
+\end{itemize}
+
+Agent D's expected wins \textbf{increase} by deviating to an empty niche.
+\end{example}
 
 \subsection{Mathematical Analysis of $\lambda = 0$ Dynamics}
 
