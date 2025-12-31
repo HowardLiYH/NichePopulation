@@ -100,17 +100,17 @@ class NicheAgent:
     def update(self, regime: str, method: str, won: bool) -> None:
         """
         Update beliefs and niche affinity.
-        
+
         IMPORTANT: Only called for the WINNER as per paper.
         Losers do not update (winner-take-all dynamics).
         """
         if not won:
             # Losers don't update - this is winner-take-all!
             return
-        
+
         # Update method belief with success (winner always gets reward=1)
         self.beliefs[regime][method].update(1.0)
-        
+
         # Update niche affinity
         self.regime_successes[regime] += 1
         self._update_niche_affinity(regime)
@@ -118,17 +118,17 @@ class NicheAgent:
     def _update_niche_affinity(self, regime: str) -> None:
         """
         Update niche affinity using the paper's formula.
-        
+
         Paper formula: α_r ← α_r + η × (1 - α_r)  [for winning regime]
         Other regimes: α_r' ← α_r' - η/(R-1)
         Then normalize.
         """
         eta = self.learning_rate  # η = 0.1 as in paper
         n_regimes = len(self.regimes)
-        
+
         # Paper formula: α += η × (1 - α) for winning regime
         self.niche_affinity[regime] += eta * (1 - self.niche_affinity[regime])
-        
+
         # Decrease other regimes
         for r in self.regimes:
             if r != regime:
@@ -174,7 +174,7 @@ class NichePopulation:
     Key mechanism: When computing winner, apply niche bonus/penalty.
     Agents that specialize in the current regime get a BOOST.
     This creates evolutionary pressure to specialize.
-    
+
     UPDATED: Winner-take-all dynamics - only winner updates beliefs/affinity.
     """
 
@@ -253,7 +253,7 @@ class NichePopulation:
         # WINNER-TAKE-ALL: Only winner updates!
         winner_agent = self.agents[winner_id]
         winner_agent.update(regime, selections[winner_id], won=True)
-        
+
         # Losers do NOT update (this is the key difference from before)
         # for agent_id, agent in self.agents.items():
         #     if agent_id != winner_id:
